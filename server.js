@@ -6,7 +6,7 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(` Server running on port ${PORT}`);
 });
@@ -44,8 +44,8 @@ async function main() {
         });
 
         //Start Server
-        app.listen(port, ()=> {
-            console.log(`Server running at http://localhost:${port}`);
+        app.listen(PORT, ()=> {
+            console.log(`Server running at http://localhost:${PORT}`);
         });
     }catch(err){
         console.error("MongoDB connection failed", err);
