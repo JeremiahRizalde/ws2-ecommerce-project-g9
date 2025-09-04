@@ -7,6 +7,7 @@
 </head>
 <body>
     <h1>Welcome, <%= user.firstName %> <%= user.lastName %>!</h1>
+    <p><strong>Email Verified:</strong> <%= user.isEmailVerified ? "Yes" : "No" %></p>
     <p><strong>User ID:</strong> <%= user.userId %></p>
     <p><strong>Email:</strong> <%= user.email %></p>
     <p><strong>Role:</strong> <%= user.role %></p>
