@@ -7,6 +7,14 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
+// Base URL: local (http://localhost:3000) or deployed (https://yourapp.onrender.com)
+const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+
+
+//lesson10: sending real verification emails with resend
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 // Registration (POST)
 router.post('/register', async (req, res) => {
     try {
@@ -40,9 +48,24 @@ router.post('/register', async (req, res) => {
             createdAt: currentDate,
             updatedAt: currentDate
         };
+        
 
         // 5. Insert into database
         await usersCollection.insertOne(newUser);
+
+        const verificationUrl = `${baseUrl}/users/verify/${token}`;
+        await resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL, // stored in .env
+            to: newUser.email,
+            subject: 'Verify your account',
+            html: `
+            <h2>Welcome, ${newUser.firstName}!</h2>
+            <p>Thank you for registering. Please verify your email by clicking the link
+            below:</p>
+            <a href="${verificationUrl}">${verificationUrl}</a>
+            `
+        });
+
         // 6. Simulated verification link
         res.send(`
             <h2>Registration Successful!</h2>
@@ -55,7 +78,7 @@ router.post('/register', async (req, res) => {
         }
     });
 
-module.exports = router;
+
 
 // MongoDB setup
 const uri = process.env.MONGO_URI;
@@ -64,7 +87,8 @@ const dbName = "ecommerceDB";
 
 // Show login form
 router.get('/login', (req, res) => {
-        res.render('login', { title: "Login" });
+        const message = req.query.message;
+        res.render('login', { title: "Login", message });
     });
 
 // Show registration form
@@ -74,9 +98,11 @@ router.get('/register', (req, res) => {
 
 // Dashboard route
 router.get('/dashboard', (req, res) => {
-    if (!req.session.user) return res.redirect('/users/login');
+    if (!req.session.user) {
+        return res.redirect('/users/login?message=timeout'); // redirect with message
+    }
     res.render('dashboard', { title: "User Dashboard", user: req.session.user });
-    });
+});
 
 // Admin view
 router.get('/admin', async (req, res) => {
@@ -93,11 +119,17 @@ router.get('/admin', async (req, res) => {
         });
     });
 
-// Logout
+// Logout route
 router.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/users/login');
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Error destroying session:", err);
+            return res.send("Something went wrong during logout.");
+        }
+        // res.clearCookie('connect.sid'); // force browser to drop cookie
+        res.redirect('/users/login?message=loggedOut');
     });
+});
 
 // Handle login form submission
 router.post('/login', async (req, res) => {
@@ -231,7 +263,7 @@ console.error("Error updating user:", err);
 res.send("Something went wrong.");
 }
 });
-module.exports = router;
+
 
 // Delete user
 router.post('/delete/:id', async (req, res) => {
@@ -247,3 +279,4 @@ router.post('/delete/:id', async (req, res) => {
         res.send("Something went wrong.");
     }
 });
+module.exports = router;
