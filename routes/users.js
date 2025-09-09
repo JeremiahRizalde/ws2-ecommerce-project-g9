@@ -7,6 +7,14 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
+// Base URL: local (http://localhost:3000) or deployed (https://yourapp.onrender.com)
+const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+
+
+//lesson10: sending real verification emails with resend
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 // Registration (POST)
 router.post('/register', async (req, res) => {
     try {
@@ -40,9 +48,22 @@ router.post('/register', async (req, res) => {
             createdAt: currentDate,
             updatedAt: currentDate
         };
+        
 
         // 5. Insert into database
         await usersCollection.insertOne(newUser);
+        const verificationUrl = `${baseUrl}/users/verify/${token}`;
+        await resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL, // stored in .env
+            to: newUser.email,
+            subject: 'Verify your account',
+            html: `
+            <h2>Welcome, ${newUser.firstName}!</h2>
+            <p>Thank you for registering. Please verify your email by clicking the link
+            below:</p>
+            <a href="${verificationUrl}">${verificationUrl}</a>
+            `
+        });
         // 6. Simulated verification link
         res.send(`
             <h2>Registration Successful!</h2>
