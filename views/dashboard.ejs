@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Pixel Gamer Shop</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.svg" alt="Pixel Gamer Shop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Gamer Shop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <li><a href="/users/dashboard">Dashboard</a></li>
+                    <li><a href="/users/logout">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/users/login">Login</a></li>
+                    <li><a href="/users/register">Register</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-success">
+                <%= message %>
+            </div>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-blue), var(--pastel-purple));">
+            <h1>Welcome, <%= user.firstName %> <%= user.lastName %>!</h1>
+            <p>Manage your account and view your order history</p>
+        </section>
+
+        <section>
+            <div class="container dashboard-container">
+                <!-- Sidebar Navigation -->
+                <div class="dashboard-sidebar">
+                    <div class="pixel-box">
+                        <h3>Account Menu</h3>
+                        <ul class="dashboard-menu">
+                            <li><a href="/users/dashboard" class="active">Dashboard</a></li>
+                            <li><a href="#">Edit Profile</a></li>
+                            <% if (user.role === 'admin') { %>
+                                <li><a href="/users/admin">Admin Panel</a></li>
+                            <% } %>
+                            <li><a href="/users/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="dashboard-content">
+                    <div class="pixel-box">
+                        <h2>Account Overview</h2>
+                        <div style="margin-top: 1.5rem;">
+                            <p><strong>Email:</strong> <%= user.email %></p>
+                            <p><strong>Email Verified:</strong> 
+                                <% if (user.isEmailVerified) { %>
+                                    <span style="color: var(--success-green);">Yes</span>
+                                <% } else { %>
+                                    <span style="color: var(--error-red);">No</span>
+                                <% } %>
+                            </p>
+                            <p><strong>User ID:</strong> <%= user.userId %></p>
+                            <p><strong>Role:</strong> <%= user.role %></p>
+                            <p><strong>Status:</strong> Active</p>
+                        </div>
+                    </div>
+
+                    <div class="pixel-box">
+                        <h2>Recent Orders</h2>
+                        <% if (true) { /* No orders yet condition */ %>
+                            <div style="text-align: center; padding: 2rem 0;">
+                                <p>You haven't placed any orders yet.</p>
+                                <a href="/products" class="pixel-btn" style="margin-top: 1rem;">Browse Products</a>
+                            </div>
+                        <% } else { %>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Sample Orders -->
+                                    <tr>
+                                        <td>#12345</td>
+                                        <td>2023-09-05</td>
+                                        <td>$99.99</td>
+                                        <td>Shipped</td>
+                                        <td><a href="#" class="pixel-btn">View</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Shop</h3>
+                    <ul>
+                        <li><a href="/products?game=minecraft">Minecraft</a></li>
+                        <li><a href="/products?game=stardew-valley">Stardew Valley</a></li>
+                        <li><a href="/products?game=terraria">Terraria</a></li>
+                        <li><a href="/products?game=pokemon">Pokemon</a></li>
+                        <li><a href="/products?game=harvest-moon">Harvest Moon</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Info</h3>
+                    <ul>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/shipping">Shipping</a></li>
+                        <li><a href="/returns">Returns</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Account</h3>
+                    <ul>
+                        <li><a href="/users/login">Login</a></li>
+                        <li><a href="/users/register">Register</a></li>
+                        <li><a href="/users/dashboard">Dashboard</a></li>
+                        <li><a href="/orders">Orders</a></li>
+                        <li><a href="/wishlist">Wishlist</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect</h3>
+                    <p>Follow us on social media for game updates, new merchandise, and exclusive deals!</p>
+                    <div class="social-links">
+                        <a href="#" class="pixel-btn">Discord</a>
+                        <a href="#" class="pixel-btn">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Pixel Gamer Shop. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+            <div class="pixel-box">
+                <h2>Recent Orders</h2>
+                <% if (true) { /* No orders yet condition */ %>
+                    <div style="text-align: center; padding: 2rem 0;">
+                        <p>You haven't placed any orders yet.</p>
+                        <a href="/products" class="pixel-btn" style="margin-top: 1rem;">Browse Products</a>
+                    </div>
+                <% } else { %>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample Orders -->
+                            <tr>
+                                <td>#12345</td>
+                                <td>2023-09-05</td>
+                                <td>$99.99</td>
+                                <td>Shipped</td>
+                                <td><a href="#" class="pixel-btn">View</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>
+`}) %>

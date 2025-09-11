@@ -1,0 +1,6 @@
+<!-- This is an SVG placeholder image -->
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#eeeeee"/>
+  <path d="M0,0 L200,200 M0,200 L200,0" stroke="#cccccc" stroke-width="2"/>
+  <text x="100" y="100" font-family="Arial" font-size="14" fill="#999999" text-anchor="middle">Image Placeholder</text>
+</svg>

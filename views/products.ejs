@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Pixel Gamer Shop</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Additional styles for product page */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .product-card {
+            border: 4px solid var(--pixel-black);
+            background-color: white;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Remove the problematic ::after pseudo-element that was creating the black square */
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 6px 6px 0 var(--minecraft-green);
+        }
+        
+        .product-img {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-bottom: 4px solid var(--pixel-black);
+        }
+        
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 1rem;
+        }
+        
+        .product-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-description {
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .product-price {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--minecraft-green);
+            font-weight: bold;
+        }
+        
+        .add-to-cart {
+            width: 100%;
+        }
+        
+        /* Game filter buttons */
+        .game-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        
+        .game-filters .pixel-btn {
+            min-width: 100px;
+            text-align: center;
+            font-size: 0.65rem;
+            padding: 0.5rem 0.75rem;
+        }
+        
+        .game-filters .pixel-btn.active {
+            background-color: var(--minecraft-green);
+        }
+        
+        /* Sort dropdown */
+        .sort-dropdown {
+            padding: 0.5rem;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.65rem;
+            border: 2px solid var(--pixel-black);
+            max-width: 200px;
+            height: auto;
+        }
+        
+        .sort-dropdown option {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.65rem;
+            padding: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.svg" alt="Pixel Gamer Shop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Gamer Shop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <li><a href="/users/dashboard">Dashboard</a></li>
+                    <li><a href="/users/logout">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/users/login">Login</a></li>
+                    <li><a href="/users/register">Register</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-success">
+                <%= message %>
+            </div>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-purple), var(--pastel-blue));">
+            <h1>Game Merchandise Collection</h1>
+            <p>Discover our wide range of products from your favorite gaming franchises!</p>
+        </section>
+
+        <section>
+            <div class="container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0;">
+                    <div>
+                        <h2>Browse By Game</h2>
+                    </div>
+                    <div>
+                        <select class="sort-dropdown">
+                            <option value="">Sort By: Featured</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="newest">Newest First</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Game filter buttons -->
+                <div class="game-filters">
+                    <a href="/products" class="pixel-btn <%= typeof gameFilter === 'undefined' || gameFilter === null ? 'active' : '' %>">All Games</a>
+                    <a href="/products/minecraft" class="pixel-btn <%= typeof gameFilter !== 'undefined' && gameFilter === 'minecraft' ? 'active' : '' %>">Minecraft</a>
+                    <a href="/products/stardewvalley" class="pixel-btn <%= typeof gameFilter !== 'undefined' && gameFilter === 'stardewvalley' ? 'active' : '' %>">Stardew Valley</a>
+                    <a href="/products/terraria" class="pixel-btn <%= typeof gameFilter !== 'undefined' && gameFilter === 'terraria' ? 'active' : '' %>">Terraria</a>
+                    <a href="/products/pokemon" class="pixel-btn <%= typeof gameFilter !== 'undefined' && gameFilter === 'pokemon' ? 'active' : '' %>">Pokemon</a>
+                    <a href="/products/harvestmoon" class="pixel-btn <%= typeof gameFilter !== 'undefined' && gameFilter === 'harvestmoon' ? 'active' : '' %>">Harvest Moon</a>
+                </div>
+                
+                <div class="products-grid">
+                    <!-- Minecraft Products -->
+                    <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'minecraft') { %>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://m.media-amazon.com/images/I/71+tAge97IL._AC_UL1500_.jpg" alt="Minecraft Creeper T-shirt">
+                        </div>
+                        <div class="product-info">
+                            <h3>Minecraft Creeper T-shirt</h3>
+                            <p class="product-description">Official Minecraft merch featuring the iconic Creeper design.</p>
+                            <p class="product-price">$24.99</p>
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://m.media-amazon.com/images/I/71Z0Z8dGscL._AC_SX679_.jpg" alt="Minecraft Creeper Plush">
+                        </div>
+                        <div class="product-info">
+                            <h3>Minecraft Creeper Plush</h3>
+                            <p class="product-description">Soft and cuddly 12-inch Creeper plush toy.</p>
+                            <p class="product-price">$19.99</p>
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <% } %>
+                    
+                    <!-- Stardew Valley Products -->
+                    <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'stardewvalley') { %>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://ih1.redbubble.net/image.1091040861.3400/ssrco,classic_tee,mens,fafafa:ca443f4786,front_alt,square_product,600x600.jpg" alt="Stardew Valley T-shirt">
+                        </div>
+                        <div class="product-info">
+                            <h3>Stardew Valley T-shirt</h3>
+                            <p class="product-description">Comfortable t-shirt featuring the cute Junimos from Stardew Valley.</p>
+                            <p class="product-price">$22.99</p>
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://ae01.alicdn.com/kf/S6f86e4b0f504492ca05d59cb37f2e1e8t.jpg_640x640Q90.jpg_.webp" alt="Stardew Valley Junimo Plush">
+                        </div>
+                        <div class="product-info">
+                            <h3>Stardew Valley Junimo Plush</h3>
+                            <p class="product-description">Adorable plush toy of the forest spirits from Stardew Valley.</p>
+                            <p class="product-price">$22.99</p>
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <% } %>
+                    
+                    <!-- Terraria Products -->
+                    <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'terraria') { %>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://res.cloudinary.com/teepublic/image/private/s--KclYXnNk--/t_Resized%20Artwork/c_crop,x_10,y_10/c_fit,w_470/c_crop,g_north_west,h_626,w_470,x_0,y_0/g_north_west,u_upload:v1462829015:production:blanks:mtl53ofohwq5goqjo9ke,x_-395,y_-325/b_rgb:eeeeee/c_limit,f_auto,h_630,q_90,w_630/v1570568606/production/designs/6224384_0.jpg" alt="Terraria Poster">
+                        </div>
+                        <div class="product-info">
+                            <h3>Terraria Wall Poster</h3>
+                            <p class="product-description">High-quality poster featuring the vibrant world of Terraria.</p>
+                            <p class="product-price">$14.99</p>
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <% } %>
+                    
+                    <!-- Pokemon Products -->
+                    <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'pokemon') { %>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://m.media-amazon.com/images/I/71LR8KFp+8L._AC_UL1500_.jpg" alt="Pokemon Pikachu Hoodie">
+                        </div>
+                        <div class="product-info">
+                            <h3>Pokemon Pikachu Hoodie</h3>
+                            <p class="product-description">Cozy hoodie featuring the beloved Pikachu character.</p>
+                            <p class="product-price">$39.99</p>
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://m.media-amazon.com/images/I/71G7rXPjbKL._AC_SL1500_.jpg" alt="Pokemon Pokeball Mug">
+                        </div>
+                        <div class="product-info">
+                            <h3>Pokemon Pokeball Mug</h3>
+                            <p class="product-description">Ceramic mug shaped like the iconic Pokeball.</p>
+                            <p class="product-price">$18.99</p>
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <% } %>
+                    
+                    <!-- Harvest Moon Products -->
+                    <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'harvestmoon') { %>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://ih1.redbubble.net/image.1049466662.2307/ssrco,classic_tee,mens,101010:01c5ca27c6,front_alt,square_product,600x600.jpg" alt="Harvest Moon T-shirt">
+                        </div>
+                        <div class="product-info">
+                            <h3>Harvest Moon T-shirt</h3>
+                            <p class="product-description">Comfortable t-shirt featuring classic Harvest Moon artwork.</p>
+                            <p class="product-price">$22.99</p>
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="pixel-box">
+                    <h2>Join the Pixel Gamer Club!</h2>
+                    <p>Subscribe to our newsletter for exclusive deals, upcoming releases, and special events.</p>
+                    
+                    <form style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <input type="email" placeholder="Your email address" style="flex: 1;">
+                        <button type="submit" class="pixel-btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Shop</h3>
+                    <ul>
+                        <li><a href="/products/minecraft">Minecraft</a></li>
+                        <li><a href="/products/stardewvalley">Stardew Valley</a></li>
+                        <li><a href="/products/terraria">Terraria</a></li>
+                        <li><a href="/products/pokemon">Pokemon</a></li>
+                        <li><a href="/products/harvestmoon">Harvest Moon</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Info</h3>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/shipping">Shipping</a></li>
+                        <li><a href="/returns">Returns</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Account</h3>
+                    <ul>
+                        <li><a href="/users/login">Login</a></li>
+                        <li><a href="/users/register">Register</a></li>
+                        <li><a href="/users/dashboard">Dashboard</a></li>
+                        <li><a href="/orders">Orders</a></li>
+                        <li><a href="/wishlist">Wishlist</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect</h3>
+                    <p>Follow us on social media for game updates, new merchandise, and exclusive deals!</p>
+                    <div class="social-links">
+                        <a href="#" class="pixel-btn">Discord</a>
+                        <a href="#" class="pixel-btn">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Pixel Gamer Shop. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Simple product filtering and sorting script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add to cart functionality
+            const addToCartButtons = document.querySelectorAll('.add-to-cart');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productName = this.closest('.product-info').querySelector('h3').textContent;
+                    alert(`Added ${productName} to your cart!`);
+                    
+                    // Animation effect
+                    this.textContent = 'Added!';
+                    this.style.backgroundColor = 'var(--minecraft-green)';
+                    
+                    setTimeout(() => {
+                        this.textContent = 'Add to Cart';
+                        this.style.backgroundColor = '';
+                    }, 2000);
+                });
+            });
+            
+            // Sorting functionality
+            const sortDropdown = document.querySelector('.sort-dropdown');
+            if (sortDropdown) {
+                sortDropdown.addEventListener('change', function() {
+                    const products = Array.from(document.querySelectorAll('.product-card'));
+                    const productsGrid = document.querySelector('.products-grid');
+                    
+                    products.sort((a, b) => {
+                        const priceA = parseFloat(a.querySelector('.product-price').textContent.replace('$', ''));
+                        const priceB = parseFloat(b.querySelector('.product-price').textContent.replace('$', ''));
+                        
+                        if (this.value === 'price-low') {
+                            return priceA - priceB;
+                        } else if (this.value === 'price-high') {
+                            return priceB - priceA;
+                        }
+                        
+                        return 0;
+                    });
+                    
+                    productsGrid.innerHTML = '';
+                    products.forEach(product => {
+                        productsGrid.appendChild(product);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

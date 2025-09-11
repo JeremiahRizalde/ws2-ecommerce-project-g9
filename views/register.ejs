@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Pixel Gamer Shop</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.svg" alt="Pixel Gamer Shop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Gamer Shop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <li><a href="/users/dashboard">Dashboard</a></li>
+                    <li><a href="/users/logout">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/users/login">Login</a></li>
+                    <li><a href="/users/register">Register</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-success">
+                <%= message %>
+            </div>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-pink), var(--pastel-purple));">
+            <h1>Join the Gamer Community</h1>
+            <p>Create an account to access exclusive gaming merchandise and discounts!</p>
+        </section>
+
+        <section>
+            <div class="container" style="max-width: 600px; margin: 2rem auto;">
+                <div class="pixel-box">
+                    <form action="/users/register" method="POST" id="registerForm">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required>
+                            <div class="password-strength">
+                                <ul class="password-requirements">
+                                    <li id="req-length">At least 8 characters</li>
+                                    <li id="req-uppercase">At least one uppercase letter</li>
+                                    <li id="req-lowercase">At least one lowercase letter</li>
+                                    <li id="req-number">At least one number</li>
+                                    <li id="req-special">At least one special character</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="pixel-btn btn-submit">Create Account</button>
+                    </form>
+                    
+                    <p style="margin-top: 1rem; text-align: center;">
+                        Already have an account? <a href="/users/login">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Shop</h3>
+                    <ul>
+                        <li><a href="/products?game=minecraft">Minecraft</a></li>
+                        <li><a href="/products?game=stardew-valley">Stardew Valley</a></li>
+                        <li><a href="/products?game=terraria">Terraria</a></li>
+                        <li><a href="/products?game=pokemon">Pokemon</a></li>
+                        <li><a href="/products?game=harvest-moon">Harvest Moon</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Info</h3>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/shipping">Shipping</a></li>
+                        <li><a href="/returns">Returns</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Account</h3>
+                    <ul>
+                        <li><a href="/users/login">Login</a></li>
+                        <li><a href="/users/register">Register</a></li>
+                        <li><a href="/users/dashboard">Dashboard</a></li>
+                        <li><a href="/orders">Orders</a></li>
+                        <li><a href="/wishlist">Wishlist</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect</h3>
+                    <p>Follow us on social media for game updates, new merchandise, and exclusive deals!</p>
+                    <div class="social-links">
+                        <a href="#" class="pixel-btn">Discord</a>
+                        <a href="#" class="pixel-btn">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Pixel Gamer Shop. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const requirements = {
+                length: document.getElementById('req-length'),
+                uppercase: document.getElementById('req-uppercase'),
+                lowercase: document.getElementById('req-lowercase'),
+                number: document.getElementById('req-number'),
+                special: document.getElementById('req-special')
+            };
+            
+            passwordInput.addEventListener('keyup', function() {
+                const password = this.value;
+                
+                // Check length
+                if (password.length >= 8) {
+                    requirements.length.style.color = 'green';
+                } else {
+                    requirements.length.style.color = '';
+                }
+                
+                // Check uppercase
+                if (/[A-Z]/.test(password)) {
+                    requirements.uppercase.style.color = 'green';
+                } else {
+                    requirements.uppercase.style.color = '';
+                }
+                
+                // Check lowercase
+                if (/[a-z]/.test(password)) {
+                    requirements.lowercase.style.color = 'green';
+                } else {
+                    requirements.lowercase.style.color = '';
+                }
+                
+                // Check number
+                if (/\d/.test(password)) {
+                    requirements.number.style.color = 'green';
+                } else {
+                    requirements.number.style.color = '';
+                }
+                
+                // Check special character
+                if (/[^A-Za-z0-9]/.test(password)) {
+                    requirements.special.style.color = 'green';
+                } else {
+                    requirements.special.style.color = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+    // Enhanced password validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('password');
+        const requirements = [
+            { id: 'req-length', regex: /.{8,}/, text: 'At least 8 characters' },
+            { id: 'req-uppercase', regex: /[A-Z]/, text: 'At least one uppercase letter' },
+            { id: 'req-lowercase', regex: /[a-z]/, text: 'At least one lowercase letter' },
+            { id: 'req-number', regex: /[0-9]/, text: 'At least one number' },
+            { id: 'req-special', regex: /[^A-Za-z0-9]/, text: 'At least one special character' }
+        ];
+        
+        // Update password strength in real-time
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            
+            // Check each requirement
+            requirements.forEach(req => {
+                const reqElement = document.getElementById(req.id);
+                if (req.regex.test(password)) {
+                    reqElement.classList.add('valid');
+                } else {
+                    reqElement.classList.remove('valid');
+                }
+            });
+        });
+        
+        // Form validation
+        const registerForm = document.getElementById('registerForm');
+        registerForm.addEventListener('submit', function(e) {
+            const password = passwordInput.value;
+            let valid = true;
+            
+            // Check all requirements
+            requirements.forEach(req => {
+                if (!req.regex.test(password)) {
+                    valid = false;
+                }
+            });
+            
+            if (!valid) {
+                e.preventDefault();
+                alert('Please make sure your password meets all requirements.');
+            }
+        });
+    });
+</script>
+`}) %>
