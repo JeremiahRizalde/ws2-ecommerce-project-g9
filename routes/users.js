@@ -67,6 +67,7 @@ router.post('/register', async (req, res) => {
             `
         });
 
+<<<<<<< HEAD
         // Redirect with success message
         req.flash('message', 'Registration successful! Please check your email to verify your account.');
         res.redirect('/users/login');
@@ -78,6 +79,19 @@ router.post('/register', async (req, res) => {
     }
 });
 
+=======
+        // 6. Simulated verification link
+        res.send(`
+            <h2>Registration Successful!</h2>
+            <p>Please verify your account before logging in.</p>
+            <p><a href="/users/verify/${token}">Click here to verify</a></p>
+        `);
+        } catch (err) {
+            console.error("Error saving user:", err);
+            res.send("Something went wrong.");
+        }
+    });
+>>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
 
 
 
@@ -88,6 +102,7 @@ const dbName = "ecommerceDB";
 
 // Show login form
 router.get('/login', (req, res) => {
+<<<<<<< HEAD
     const message = req.query.message || req.flash('message');
     const error = req.flash('error');
     res.render('login', { 
@@ -106,6 +121,16 @@ router.get('/register', (req, res) => {
         user: req.session.user || null
     });
 });
+=======
+        const message = req.query.message;
+        res.render('login', { title: "Login", message });
+    });
+
+// Show registration form
+router.get('/register', (req, res) => {
+    res.render('register', { title: "Register" });
+    });
+>>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
 
 // Dashboard route
 router.get('/dashboard', (req, res) => {

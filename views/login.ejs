@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Login - Pixel Gamer Shop</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -143,5 +144,32 @@
             </div>
         </div>
     </footer>
+=======
+    <title>Document</title>
+</head>
+<body>
+    <h1>Login</h1>
+
+    <% if (message === 'timeout') { %>
+        <p>Your session has expired. Please log in again.</p>
+    <% } else if (message === 'loggedOut') { %>
+        <p>You have been logged out.</p>
+    <% } %>
+    
+    <form action="/users/login" method="POST">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+
+        <button type="submit">Login</button>
+        <p><a href="/password/forgot">Forgot Password?</a></p>
+        </form>
+
+    <p>Don’t have an account? <a href="/users/register">Register here</a></p>
+>>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
 </body>
 </html>
