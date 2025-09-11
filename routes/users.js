@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
+
 // Base URL: local (http://localhost:3000) or deployed (https://yourapp.onrender.com)
 const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
 
