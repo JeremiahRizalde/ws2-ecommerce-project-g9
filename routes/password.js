@@ -3,7 +3,17 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
 const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend;
+try {
+    // Only initialize Resend if API key is available
+    if (process.env.RESEND_API_KEY) {
+        resend = new Resend(process.env.RESEND_API_KEY);
+    } else {
+        console.warn('RESEND_API_KEY is not set. Password reset functionality will be disabled.');
+    }
+} catch (error) {
+    console.error('Failed to initialize Resend:', error);
+}
 
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
@@ -41,17 +51,27 @@ router.post('/forgot', async (req, res) => {
         const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
         const resetUrl = `${baseUrl}/password/reset/${token}`;
 
-        // Send email with Resend
-        await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL,
-            to: user.email,
-            subject: 'Password Reset Request',
-            html: `
-            <h2>Password Reset</h2>
-            <p>Click below to reset your password:</p>
-            <a href="${resetUrl}">${resetUrl}</a>
-            `
-        });
+        // Send email with Resend if available
+        if (resend) {
+            try {
+                await resend.emails.send({
+                    from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+                    to: user.email,
+                    subject: 'Password Reset Request',
+                    html: `
+                    <h2>Password Reset</h2>
+                    <p>Click below to reset your password:</p>
+                    <a href="${resetUrl}">${resetUrl}</a>
+                    `
+                });
+            } catch (emailError) {
+                console.error("Failed to send password reset email:", emailError);
+                // Continue with the process even if email fails
+            }
+        } else {
+            console.log(`Email would have been sent to ${user.email} with reset URL: ${resetUrl}`);
+        }
+        
         res.send("If an account with that email exists, a reset link has been sent.");
         } catch (err) {
     console.error("Error in password reset:", err);

@@ -14,7 +14,17 @@ const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
 
 //lesson10: sending real verification emails with resend
 const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend;
+try {
+    // Only initialize Resend if API key is available
+    if (process.env.RESEND_API_KEY) {
+        resend = new Resend(process.env.RESEND_API_KEY);
+    } else {
+        console.warn('RESEND_API_KEY is not set. Email functionality will be disabled.');
+    }
+} catch (error) {
+    console.error('Failed to initialize Resend:', error);
+}
 
 // Registration (POST)
 router.post('/register', async (req, res) => {
@@ -55,17 +65,28 @@ router.post('/register', async (req, res) => {
         await usersCollection.insertOne(newUser);
 
         const verificationUrl = `${baseUrl}/users/verify/${token}`;
-        await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL, // stored in .env
-            to: newUser.email,
-            subject: 'Verify your account',
-            html: `
-            <h2>Welcome, ${newUser.firstName}!</h2>
-            <p>Thank you for registering. Please verify your email by clicking the link
-            below:</p>
-            <a href="${verificationUrl}">${verificationUrl}</a>
-            `
-        });
+        
+        // Only send email if Resend is initialized
+        if (resend) {
+            try {
+                await resend.emails.send({
+                    from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev', // fallback to default if not provided
+                    to: newUser.email,
+                    subject: 'Verify your account',
+                    html: `
+                    <h2>Welcome, ${newUser.firstName}!</h2>
+                    <p>Thank you for registering. Please verify your email by clicking the link
+                    below:</p>
+                    <a href="${verificationUrl}">${verificationUrl}</a>
+                    `
+                });
+            } catch (emailError) {
+                console.error("Failed to send verification email:", emailError);
+                // Continue with registration even if email fails
+            }
+        } else {
+            console.log(`Email would have been sent to ${newUser.email} with verification URL: ${verificationUrl}`);
+        }
 
         // Redirect with success message
         req.flash('message', 'Registration successful! Please check your email to verify your account.');
