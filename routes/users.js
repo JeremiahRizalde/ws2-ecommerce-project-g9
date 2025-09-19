@@ -14,17 +14,7 @@ const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
 
 //lesson10: sending real verification emails with resend
 const { Resend } = require('resend');
-let resend;
-try {
-    // Only initialize Resend if API key is available
-    if (process.env.RESEND_API_KEY) {
-        resend = new Resend(process.env.RESEND_API_KEY);
-    } else {
-        console.warn('RESEND_API_KEY is not set. Email functionality will be disabled.');
-    }
-} catch (error) {
-    console.error('Failed to initialize Resend:', error);
-}
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Registration (POST)
 router.post('/register', async (req, res) => {
@@ -65,28 +55,17 @@ router.post('/register', async (req, res) => {
         await usersCollection.insertOne(newUser);
 
         const verificationUrl = `${baseUrl}/users/verify/${token}`;
-        
-        // Only send email if Resend is initialized
-        if (resend) {
-            try {
-                await resend.emails.send({
-                    from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev', // fallback to default if not provided
-                    to: newUser.email,
-                    subject: 'Verify your account',
-                    html: `
-                    <h2>Welcome, ${newUser.firstName}!</h2>
-                    <p>Thank you for registering. Please verify your email by clicking the link
-                    below:</p>
-                    <a href="${verificationUrl}">${verificationUrl}</a>
-                    `
-                });
-            } catch (emailError) {
-                console.error("Failed to send verification email:", emailError);
-                // Continue with registration even if email fails
-            }
-        } else {
-            console.log(`Email would have been sent to ${newUser.email} with verification URL: ${verificationUrl}`);
-        }
+        await resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL, // stored in .env
+            to: newUser.email,
+            subject: 'Verify your account',
+            html: `
+            <h2>Welcome, ${newUser.firstName}!</h2>
+            <p>Thank you for registering. Please verify your email by clicking the link
+            below:</p>
+            <a href="${verificationUrl}">${verificationUrl}</a>
+            `
+        });
 
         // Redirect with success message
         req.flash('message', 'Registration successful! Please check your email to verify your account.');
@@ -107,26 +86,22 @@ const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 const dbName = "ecommerceDB";
 
-// Login route handler
-
+// Show login form
 router.get('/login', (req, res) => {
-  // If user is already logged in, redirect to home
-  if (req.session.user) {
-    return res.redirect('/');
-  }
-  
-  // Otherwise show login page
-  res.render('login', { 
-    error: req.flash('error'),
-    message: req.flash('message'),
-    returnTo: req.session.returnTo || '/'
-  });
+    const message = req.query.message || req.flash('message');
+    const error = req.flash('error');
+    res.render('login', { 
+        title: "Login - Pixel Gamer Shop", 
+        message, 
+        error,
+        user: req.session.user || null
+    });
 });
 
 // Show registration form
 router.get('/register', (req, res) => {
     res.render('register', { 
-        title: "Register - Pixel Stop",
+        title: "Register - Pixel Gamer Shop",
         error: req.flash('error'),
         user: req.session.user || null
     });
@@ -199,10 +174,7 @@ router.post('/login', async (req, res) => {
                 isEmailVerified: user.isEmailVerified
             };
             
-            // Redirect to home page or originally requested URL
-            const redirectUrl = req.session.returnTo || '/';
-            delete req.session.returnTo; // Clean up the stored URL
-            res.redirect(redirectUrl);
+            res.redirect('/users/dashboard');
         } else {
             res.send("Invalid password.");
         }
@@ -302,7 +274,6 @@ console.error("Error updating user:", err);
 res.send("Something went wrong.");
 }
 });
-
 
 
 // Delete user
