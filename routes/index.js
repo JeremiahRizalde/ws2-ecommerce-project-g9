@@ -23,5 +23,25 @@ router.get('/about', (req, res) => {
     });
 });
 
+// Terms & Conditions Route
+router.get('/terms', (req, res) => {
+    res.render('terms', { 
+        title: 'Terms & Conditions',
+        message: req.flash('message'),
+        error: req.flash('error'),
+        user: req.session.user || null
+    });
+});
+
+// Privacy Policy Route
+router.get('/privacypolicy', (req, res) => {
+    res.render('privacypolicy', {
+        title: 'Privacy Policy',
+        message: req.flash('message'),
+        error: req.flash('error'),
+        user: req.session.user || null
+    });
+});
+
 module.exports = router;
 
