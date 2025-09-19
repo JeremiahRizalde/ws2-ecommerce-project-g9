@@ -43,7 +43,7 @@ router.post('/register', async (req, res) => {
             passwordHash: hashedPassword, // never store plain text password
             role: 'customer', // default role
             accountStatus: 'active',
-            isEmailVerified: false, // must be verified before login
+            isEmailVerified: true, // must be verified before login
             verificationToken: token, // link user to verification
             tokenExpiry: new Date(Date.now() + 3600000), // expires in 1 hour
             createdAt: currentDate,
