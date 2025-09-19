@@ -69,7 +69,17 @@ app.use((req, res, next) => {
 // Route protection middleware
 const requireLogin = (req, res, next) => {
   // Exclude these paths from requiring login
-  const publicPaths = ['/users/login', '/users/register', '/users/forgot-password'];
+  const publicPaths = [
+    '/users/login', 
+    '/users/register', 
+    '/password/forgot',  
+    '/password/reset'    
+  ];
+  
+  // Also allow any path that starts with /password/reset/ (for token-based reset)
+  if (req.path.startsWith('/password/reset/')) {
+    return next();
+  }
   
   if (!req.session.user && !publicPaths.includes(req.path)) {
     // Store the requested URL to redirect back after login
@@ -79,7 +89,6 @@ const requireLogin = (req, res, next) => {
   
   next();
 };
-
 // Apply route protection to all routes except public ones
 app.use(requireLogin);
 
