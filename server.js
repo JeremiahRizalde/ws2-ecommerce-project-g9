@@ -4,11 +4,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 const session = require('express-session'); // Added for user sessions
-<<<<<<< HEAD
 const flash = require('connect-flash');
-=======
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
 require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
 
 
 const app = express();
@@ -17,10 +16,16 @@ const PORT = process.env.PORT || 3000;
 //Middleware
 app.use(bodyParser.urlencoded({ extended: true}));
 app.set('view engine', 'ejs');
-<<<<<<< HEAD
 app.use(express.static('public'));
-=======
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
+
+// Set views path explicitly
+app.set('views', path.join(__dirname, 'views'));
+
+// Add a helper function for includes
+app.locals.include = function(filename) {
+  const filepath = path.join(__dirname, 'views', filename);
+  return fs.readFileSync(filepath, 'utf8');
+};
 
 // Session setup
 app.use(session({
@@ -29,7 +34,6 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         secure: false, // set to true only if using HTTPS
-<<<<<<< HEAD
         maxAge: 15 * 60 * 1000 // 15 minutes (in milliseconds)
     }
 }));
@@ -38,36 +42,43 @@ app.use(session({
 app.use(flash());
 
 // Authentication middleware
-const { checkAuthenticated } = require('./middleware/auth');
-app.use(checkAuthenticated);
-=======
-        maxAge: 2 * 60 * 1000 // 15 minutes (in milliseconds)
-    }
+app.use((req, res, next) => {
+  // Make user data available to all templates
+  res.locals.user = req.session.user || null;
+  next();
+});
 
-}));
+// Route protection middleware
+const requireLogin = (req, res, next) => {
+  // Exclude these paths from requiring login
+  const publicPaths = ['/users/login', '/users/register', '/users/forgot-password'];
+  
+  if (!req.session.user && !publicPaths.includes(req.path)) {
+    // Store the requested URL to redirect back after login
+    req.session.returnTo = req.originalUrl;
+    return res.redirect('/users/login');
+  }
+  
+  next();
+};
 
-
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
+// Apply route protection to all routes except public ones
+app.use(requireLogin);
 
 //Routes
 const indexRoute = require('./routes/index');
 const usersRoute = require('./routes/users');
 const passwordRoute = require('./routes/password');
-<<<<<<< HEAD
 const contactRoute = require('./routes/contact');
 const productsRoute = require('./routes/products');
+const cartRoute = require('./routes/cart'); // Added cart route
 
 app.use('/', indexRoute);
 app.use('/users', usersRoute);
 app.use('/password', passwordRoute);
 app.use('/contact', contactRoute);
 app.use('/products', productsRoute);
-=======
-app.use('/password', passwordRoute);
-
-app.use('/', indexRoute);
-app.use('/users', usersRoute);
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
+app.use('/cart', cartRoute); // Use cart route
 
 
 //MongoDB Setup
@@ -78,14 +89,6 @@ const client = new MongoClient(uri);
 app.locals.client = client;
 app.locals.dbName = process.env.DB_NAME || "ecommerceDB";
 
-<<<<<<< HEAD
-// Remove the conflicting route
-// app.get('/', (req, res) => {
-//     res.send("Hello, MongoDB is connected!");
-// });
-
-=======
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
 
 
 async function main() {
@@ -96,18 +99,11 @@ async function main() {
         //Select Database
         const database = client.db("ecommerceDB");
 
-<<<<<<< HEAD
         // Comment out the test route that might be overriding our routes
         // Temporary test route
         // app.get('/', (req, res) => {
         //     res.send("Hello, MongoDB is connected!");
         // });
-=======
-        //Temporary test route
-        app.get('/', (req, res) => {
-            res.send("Hello, MongoDB is connected!");
-        });
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
 
         //Start Server
         app.listen(PORT, ()=> {

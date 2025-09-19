@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Pixel Stop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cart.css">
+</head>
+<body>
+    
+
+<!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <li><a href="/users/dashboard">Dashboard</a></li>
+                    <li><a href="/users/logout">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/users/login">Login</a></li>
+                    <li><a href="/users/register">Register</a></li>
+                <% } %>
+                <li>
+                    <a href="/cart" class="cart-icon">
+                        <img src="/images/cart-icon.svg" alt="Cart">
+                        <span id="cart-count">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-success">
+                <%= message %>
+            </div>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-blue), var(--pastel-green));">
+            <h1>About Pixel Stop</h1>
+            <p>Your ultimate destination for merchandise from your favorite pixel games!</p>
+        </section>
+
+        <section>
+            <div class="container" style="max-width: 800px; margin: 2rem auto;">
+                <div class="pixel-box">
+                    <h2>Our Story</h2>
+                    <p>Pixel Stop was founded in 2023 by a group of passionate gamers who wanted to create a one-stop shop for merchandise from their favorite pixel-art and indie games.</p>
+                    
+                    <p>What started as a small online store run out of a garage has grown into the premier destination for gaming merchandise, with a focus on titles like Minecraft, Stardew Valley, Terraria, and other beloved pixel games.</p>
+                    <hr>
+                    <img src="/images/logo.png" alt="Our Shop" style="display: block; max-width: 100%; height: auto; margin: 0 auto; width: 300px;">
+                    <br>
+                    <h2 style="display: block;  color: darkolivegreen; max-width: 100%; height: auto; margin: 0 auto; width: 300px;">Pixel Stop</h2>
+                    <br>
+                    <hr>
+                    <br>
+                    <h2>Our Mission</h2>
+                    <p>At Pixel Stop, our mission is to provide high-quality, officially licensed merchandise that celebrates the games you love. We believe that gaming merchandise should be as unique and special as the games themselves.</p>
+                    
+                    <br>
+                    <h2>Our Values</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div class="pixel-box" style="margin: 0; padding: 1rem; text-align: center;">
+                            <h3 style="font-size: 1rem;">Quality</h3>
+                            <p style="font-size: 0.8rem;">We ensure all our products meet the highest standards of quality and durability.</p>
+                        </div>
+                        
+                        <div class="pixel-box" style="margin: 0; padding: 1rem; text-align: center;">
+                            <h3 style="font-size: 1rem;">Community</h3>
+                            <p style="font-size: 0.8rem;">We support and engage with gaming communities, contributing to events and charities.</p>
+                        </div>
+                        
+                        <div class="pixel-box" style="margin: 0; padding: 1rem; text-align: center;">
+                            <h3 style="font-size: 1rem;">Creativity</h3>
+                            <p style="font-size: 0.8rem;">We celebrate the creativity and artistry that goes into the games we all love.</p>
+                        </div>
+                    </div>
+                    
+                    <br>
+                    <h2>Meet The Team</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div class="pixel-box" style="margin: 0; padding: 1rem; text-align: center;">
+                            <h3 style="font-size: 1rem;">Jeremiah Rizalde</h3>
+                            <p style="font-size: 0.8rem;">Founder & CEO</p>
+                        </div>
+                        
+                        <div class="pixel-box" style="margin: 0; padding: 1rem; text-align: center;">
+                            <h3 style="font-size: 1rem;">Sammy Dela Cruz</h3>
+                            <p style="font-size: 0.8rem;">Creative Director</p>
+                        </div>
+                
+                        <div class="pixel-box" style="margin: 0; padding: 1rem; text-align: center;">
+                            <h3 style="font-size: 1rem;">Jordan Michael</h3>
+                            <p style="font-size: 0.8rem;">Customer Support</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <%- include('/partials/footer.ejs') %>
+
+    <!-- Cart functionality -->
+    <script src="/js/cart.js"></script>
+</body>
+</html>

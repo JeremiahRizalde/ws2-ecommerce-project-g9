@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>Login - Pixel Gamer Shop</title>
-    <!-- Fonts -->
+    <title>Login - Pixel Stop</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <!-- CSS -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -15,11 +12,12 @@
     <nav class="navbar">
         <div class="container nav-container">
             <div class="logo">
-                <img src="/images/logo.svg" alt="Pixel Gamer Shop Logo" onerror="this.src='/images/placeholder.png'">
-                <span>Pixel Gamer Shop</span>
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
             </div>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
                 <li><a href="/products">Products</a></li>
                 <li><a href="/contact">Contact</a></li>
                 <% if (typeof user !== 'undefined' && user) { %>
@@ -98,78 +96,7 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Shop</h3>
-                    <ul>
-                        <li><a href="/products?game=minecraft">Minecraft</a></li>
-                        <li><a href="/products?game=stardew-valley">Stardew Valley</a></li>
-                        <li><a href="/products?game=terraria">Terraria</a></li>
-                        <li><a href="/products?game=pokemon">Pokemon</a></li>
-                        <li><a href="/products?game=harvest-moon">Harvest Moon</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Info</h3>
-                    <ul>
-                        <li><a href="/contact">Contact</a></li>
-                        <li><a href="/shipping">Shipping</a></li>
-                        <li><a href="/returns">Returns</a></li>
-                        <li><a href="/faq">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Account</h3>
-                    <ul>
-                        <li><a href="/users/login">Login</a></li>
-                        <li><a href="/users/register">Register</a></li>
-                        <li><a href="/users/dashboard">Dashboard</a></li>
-                        <li><a href="/orders">Orders</a></li>
-                        <li><a href="/wishlist">Wishlist</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Connect</h3>
-                    <p>Follow us on social media for game updates, new merchandise, and exclusive deals!</p>
-                    <div class="social-links">
-                        <a href="#" class="pixel-btn">Discord</a>
-                        <a href="#" class="pixel-btn">Twitter</a>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2025 Pixel Gamer Shop. All rights reserved.
-            </div>
-        </div>
-    </footer>
-=======
-    <title>Document</title>
-</head>
-<body>
-    <h1>Login</h1>
+             <%- include('/partials/footer.ejs') %>
 
-    <% if (message === 'timeout') { %>
-        <p>Your session has expired. Please log in again.</p>
-    <% } else if (message === 'loggedOut') { %>
-        <p>You have been logged out.</p>
-    <% } %>
-    
-    <form action="/users/login" method="POST">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-
-        <button type="submit">Login</button>
-        <p><a href="/password/forgot">Forgot Password?</a></p>
-        </form>
-
-    <p>Don’t have an account? <a href="/users/register">Register here</a></p>
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
 </body>
 </html>

@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products - Pixel Gamer Shop</title>
-    <!-- Fonts -->
+    <title>Products - Pixel Stop</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <!-- CSS -->
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cart.css">
     <style>
-        /* Additional styles for product page */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -23,9 +21,7 @@
             position: relative;
             transition: transform 0.3s ease;
         }
-        
-        /* Remove the problematic ::after pseudo-element that was creating the black square */
-        
+                
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 6px 6px 0 var(--minecraft-green);
@@ -112,13 +108,13 @@
     <nav class="navbar">
         <div class="container nav-container">
             <div class="logo">
-                <img src="/images/logo.svg" alt="Pixel Gamer Shop Logo" onerror="this.src='/images/placeholder.png'">
-                <span>Pixel Gamer Shop</span>
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
             </div>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
-                <li><a href="/products">Products</a></li>
                 <li><a href="/about">About</a></li>
+                <li><a href="/products">Products</a></li>
                 <li><a href="/contact">Contact</a></li>
                 <% if (typeof user !== 'undefined' && user) { %>
                     <li><a href="/users/dashboard">Dashboard</a></li>
@@ -127,6 +123,13 @@
                     <li><a href="/users/login">Login</a></li>
                     <li><a href="/users/register">Register</a></li>
                 <% } %>
+                <li>
+                    <a href="/cart" class="cart-icon">
+                        <img src="/images/cart-icon.svg" alt="Cart">
+                    <span id="cart-count">0</span>
+
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -163,10 +166,8 @@
                     </div>
                     <div>
                         <select class="sort-dropdown">
-                            <option value="">Sort By: Featured</option>
                             <option value="price-low">Price: Low to High</option>
                             <option value="price-high">Price: High to Low</option>
-                            <option value="newest">Newest First</option>
                         </select>
                     </div>
                 </div>
@@ -184,26 +185,26 @@
                 <div class="products-grid">
                     <!-- Minecraft Products -->
                     <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'minecraft') { %>
-                    <div class="product-card">
+                    <div class="product-card" data-product-id="MC001">
                         <div class="product-img">
-                            <img src="https://m.media-amazon.com/images/I/71+tAge97IL._AC_UL1500_.jpg" alt="Minecraft Creeper T-shirt">
+                            <img src="https://media.vertbaudet.com/Pictures/vertbaudet/535433/minecraft-creeper-t-shirt.jpg?width=457?width=1320" alt="Minecraft Creeper T-shirt">
                         </div>
                         <div class="product-info">
                             <h3>Minecraft Creeper T-shirt</h3>
                             <p class="product-description">Official Minecraft merch featuring the iconic Creeper design.</p>
-                            <p class="product-price">$24.99</p>
+                            <p class="product-price">P1,449</p> 
                             <button class="pixel-btn add-to-cart">Add to Cart</button>
                         </div>
                     </div>
                     
-                    <div class="product-card">
+                    <div class="product-card" data-product-id="MC002">
                         <div class="product-img">
-                            <img src="https://m.media-amazon.com/images/I/71Z0Z8dGscL._AC_SX679_.jpg" alt="Minecraft Creeper Plush">
+                            <img src="https://minecraftshop.com/cdn/shop/products/MCMATTEL-CREEPERPLUSH-1_1080x.png?v=1622666343" alt="Minecraft Creeper Plush">
                         </div>
                         <div class="product-info">
                             <h3>Minecraft Creeper Plush</h3>
                             <p class="product-description">Soft and cuddly 12-inch Creeper plush toy.</p>
-                            <p class="product-price">$19.99</p>
+                            <p class="product-price">P1,159</p> 
                             <button class="pixel-btn add-to-cart">Add to Cart</button>
                         </div>
                     </div>
@@ -211,26 +212,26 @@
                     
                     <!-- Stardew Valley Products -->
                     <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'stardewvalley') { %>
-                    <div class="product-card">
+                    <div class="product-card" data-product-id="SV001">
                         <div class="product-img">
-                            <img src="https://ih1.redbubble.net/image.1091040861.3400/ssrco,classic_tee,mens,fafafa:ca443f4786,front_alt,square_product,600x600.jpg" alt="Stardew Valley T-shirt">
+                            <img src="https://cdn11.bigcommerce.com/s-fbh9rcmv2i/images/stencil/1280x1280/products/152845/182615/Stardew_Valley_Gaming__41954.1663897660.jpg?c=1" alt="Stardew Valley T-shirt">
                         </div>
                         <div class="product-info">
                             <h3>Stardew Valley T-shirt</h3>
                             <p class="product-description">Comfortable t-shirt featuring the cute Junimos from Stardew Valley.</p>
-                            <p class="product-price">$22.99</p>
+                            <p class="product-price">P1,333</p> 
                             <button class="pixel-btn add-to-cart">Add to Cart</button>
                         </div>
                     </div>
                     
-                    <div class="product-card">
+                    <div class="product-card" data-product-id="SV002">
                         <div class="product-img">
-                            <img src="https://ae01.alicdn.com/kf/S6f86e4b0f504492ca05d59cb37f2e1e8t.jpg_640x640Q90.jpg_.webp" alt="Stardew Valley Junimo Plush">
+                            <img src="https://m.media-amazon.com/images/I/71sgoNkWxfL.jpg" alt="Stardew Valley Junimo Plush">
                         </div>
                         <div class="product-info">
                             <h3>Stardew Valley Junimo Plush</h3>
                             <p class="product-description">Adorable plush toy of the forest spirits from Stardew Valley.</p>
-                            <p class="product-price">$22.99</p>
+                            <p class="product-price">P1,333</p> 
                             <button class="pixel-btn add-to-cart">Add to Cart</button>
                         </div>
                     </div>
@@ -240,12 +241,24 @@
                     <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'terraria') { %>
                     <div class="product-card">
                         <div class="product-img">
-                            <img src="https://res.cloudinary.com/teepublic/image/private/s--KclYXnNk--/t_Resized%20Artwork/c_crop,x_10,y_10/c_fit,w_470/c_crop,g_north_west,h_626,w_470,x_0,y_0/g_north_west,u_upload:v1462829015:production:blanks:mtl53ofohwq5goqjo9ke,x_-395,y_-325/b_rgb:eeeeee/c_limit,f_auto,h_630,q_90,w_630/v1570568606/production/designs/6224384_0.jpg" alt="Terraria Poster">
+                            <img src="https://i.etsystatic.com/39379200/r/il/aa25bc/4476548397/il_fullxfull.4476548397_fu9d.jpg" alt="Terraria Poster">
                         </div>
                         <div class="product-info">
                             <h3>Terraria Wall Poster</h3>
                             <p class="product-description">High-quality poster featuring the vibrant world of Terraria.</p>
-                            <p class="product-price">$14.99</p>
+                            <p class="product-price">P869</p> 
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://fireandsteel.ca/cdn/shop/files/TrueNightsEdgeSword05_700x700.jpg?v=1756991684" alt="Terraria Poster">
+                        </div>
+                        <div class="product-info">
+                            <h3>Terraria Blade Replica</h3>
+                            <p class="product-description">High-quality replica of the iconic Terra Blade from Terraria.</p>
+                            <p class="product-price">P2,319</p> 
                             <button class="pixel-btn add-to-cart">Add to Cart</button>
                         </div>
                     </div>
@@ -255,24 +268,36 @@
                     <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'pokemon') { %>
                     <div class="product-card">
                         <div class="product-img">
-                            <img src="https://m.media-amazon.com/images/I/71LR8KFp+8L._AC_UL1500_.jpg" alt="Pokemon Pikachu Hoodie">
+                            <img src="https://i.ebayimg.com/images/g/hvwAAOSwUChiDT8s/s-l1200.jpg" alt="Pokemon Pikachu Hoodie">
                         </div>
                         <div class="product-info">
                             <h3>Pokemon Pikachu Hoodie</h3>
                             <p class="product-description">Cozy hoodie featuring the beloved Pikachu character.</p>
-                            <p class="product-price">$39.99</p>
+                            <p class="product-price">P2,319</p> 
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://i5.walmartimages.com/seo/CXDA-Female-Ears-Moving-Up-Down-Air-Bag-Plush-Toy-Cap-yellow_1b82b3fc-6762-45f0-ba7d-a477640dfe63.6292c048cbc5864e6856346399630d49.jpeg" alt="Pokemon Pikachu Hoodie">
+                        </div>
+                        <div class="product-info">
+                            <h3>Pikachu Hat</h3>
+                            <p class="product-description">Cozy hat featuring the beloved Pikachu character.</p>
+                            <p class="product-price">P1,333</p> 
                             <button class="pixel-btn add-to-cart">Add to Cart</button>
                         </div>
                     </div>
                     
                     <div class="product-card">
                         <div class="product-img">
-                            <img src="https://m.media-amazon.com/images/I/71G7rXPjbKL._AC_SL1500_.jpg" alt="Pokemon Pokeball Mug">
+                            <img src="https://m.media-amazon.com/images/I/61A-W01R-YL._UF894,1000_QL80_.jpg" alt="Pokemon Pokeball Mug">
                         </div>
                         <div class="product-info">
                             <h3>Pokemon Pokeball Mug</h3>
                             <p class="product-description">Ceramic mug shaped like the iconic Pokeball.</p>
-                            <p class="product-price">$18.99</p>
+                            <p class="product-price">P1,101</p> 
                             <button class="pixel-btn add-to-cart">Add to Cart</button>
                         </div>
                     </div>
@@ -282,12 +307,36 @@
                     <% if (typeof gameFilter === 'undefined' || gameFilter === null || gameFilter === 'harvestmoon') { %>
                     <div class="product-card">
                         <div class="product-img">
-                            <img src="https://ih1.redbubble.net/image.1049466662.2307/ssrco,classic_tee,mens,101010:01c5ca27c6,front_alt,square_product,600x600.jpg" alt="Harvest Moon T-shirt">
+                            <img src="https://www.animalhearted.com/cdn/shop/products/harvest-moon-cat-t-shirt_700x700.jpg?v=1633055741" alt="Harvest Moon T-shirt">
                         </div>
                         <div class="product-info">
                             <h3>Harvest Moon T-shirt</h3>
                             <p class="product-description">Comfortable t-shirt featuring classic Harvest Moon artwork.</p>
-                            <p class="product-price">$22.99</p>
+                            <p class="product-price">P1,333</p> 
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://www.gamespot.com/a/uploads/original/1702/17023653/4170586-plush.jpg" alt="Harvest Moon T-shirt">
+                        </div>
+                        <div class="product-info">
+                            <h3>Harvest Moon Cow Plush</h3>
+                            <p class="product-description">Soft and cuddly plush toy of the iconic Harvest Moon cow.</p>
+                            <p class="product-price">P753</p> 
+                            <button class="pixel-btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="https://i.pinimg.com/736x/10/5c/12/105c1225a2f76b3f8f8c5ec6d4041f24.jpg" alt="Harvest Moon T-shirt">
+                        </div>
+                        <div class="product-info">
+                            <h3>Harvest Moon Figurine</h3>
+                            <p class="product-description">Collectible figurine of the iconic Harvest Moon cow.</p>
+                            <p class="product-price">P1,391</p> 
                             <button class="pixel-btn add-to-cart">Add to Cart</button>
                         </div>
                     </div>
@@ -312,59 +361,13 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Shop</h3>
-                    <ul>
-                        <li><a href="/products/minecraft">Minecraft</a></li>
-                        <li><a href="/products/stardewvalley">Stardew Valley</a></li>
-                        <li><a href="/products/terraria">Terraria</a></li>
-                        <li><a href="/products/pokemon">Pokemon</a></li>
-                        <li><a href="/products/harvestmoon">Harvest Moon</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Info</h3>
-                    <ul>
-                        <li><a href="/about">About Us</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                        <li><a href="/shipping">Shipping</a></li>
-                        <li><a href="/returns">Returns</a></li>
-                        <li><a href="/faq">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Account</h3>
-                    <ul>
-                        <li><a href="/users/login">Login</a></li>
-                        <li><a href="/users/register">Register</a></li>
-                        <li><a href="/users/dashboard">Dashboard</a></li>
-                        <li><a href="/orders">Orders</a></li>
-                        <li><a href="/wishlist">Wishlist</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Connect</h3>
-                    <p>Follow us on social media for game updates, new merchandise, and exclusive deals!</p>
-                    <div class="social-links">
-                        <a href="#" class="pixel-btn">Discord</a>
-                        <a href="#" class="pixel-btn">Twitter</a>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2025 Pixel Gamer Shop. All rights reserved.
-            </div>
-        </div>
-    </footer>
+    <%- include('/partials/footer.ejs') %>
 
-    <!-- JavaScript -->
+    <!-- js -->
     <script>
-        // Simple product filtering and sorting script
+        // product filtering and sorting script
         document.addEventListener('DOMContentLoaded', function() {
-            // Add to cart functionality
+            // Add to cart function
             const addToCartButtons = document.querySelectorAll('.add-to-cart');
             addToCartButtons.forEach(button => {
                 button.addEventListener('click', function() {
@@ -410,5 +413,7 @@
             }
         });
     </script>
+    
+    <script src="/js/cart.js"></script>
 </body>
 </html>

@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>User Dashboard - Pixel Gamer Shop</title>
+    <title>User Dashboard - Pixel Stop</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- CSS -->
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cart.css">
+
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-container">
             <div class="logo">
-                <img src="/images/logo.svg" alt="Pixel Gamer Shop Logo" onerror="this.src='/images/placeholder.png'">
-                <span>Pixel Gamer Shop</span>
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
             </div>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li> 
                 <li><a href="/products">Products</a></li>
                 <li><a href="/contact">Contact</a></li>
                 <% if (typeof user !== 'undefined' && user) { %>
@@ -29,6 +31,12 @@
                     <li><a href="/users/login">Login</a></li>
                     <li><a href="/users/register">Register</a></li>
                 <% } %>
+                <li>
+                    <a href="/cart" class="cart-icon">
+                        <img src="/images/cart-icon.svg" alt="Cart">
+                        <span id="cart-count">0</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -129,110 +137,7 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Shop</h3>
-                    <ul>
-                        <li><a href="/products?game=minecraft">Minecraft</a></li>
-                        <li><a href="/products?game=stardew-valley">Stardew Valley</a></li>
-                        <li><a href="/products?game=terraria">Terraria</a></li>
-                        <li><a href="/products?game=pokemon">Pokemon</a></li>
-                        <li><a href="/products?game=harvest-moon">Harvest Moon</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Info</h3>
-                    <ul>
-                        <li><a href="/contact">Contact</a></li>
-                        <li><a href="/shipping">Shipping</a></li>
-                        <li><a href="/returns">Returns</a></li>
-                        <li><a href="/faq">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Account</h3>
-                    <ul>
-                        <li><a href="/users/login">Login</a></li>
-                        <li><a href="/users/register">Register</a></li>
-                        <li><a href="/users/dashboard">Dashboard</a></li>
-                        <li><a href="/orders">Orders</a></li>
-                        <li><a href="/wishlist">Wishlist</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Connect</h3>
-                    <p>Follow us on social media for game updates, new merchandise, and exclusive deals!</p>
-                    <div class="social-links">
-                        <a href="#" class="pixel-btn">Discord</a>
-                        <a href="#" class="pixel-btn">Twitter</a>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2025 Pixel Gamer Shop. All rights reserved.
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
-
-            <div class="pixel-box">
-                <h2>Recent Orders</h2>
-                <% if (true) { /* No orders yet condition */ %>
-                    <div style="text-align: center; padding: 2rem 0;">
-                        <p>You haven't placed any orders yet.</p>
-                        <a href="/products" class="pixel-btn" style="margin-top: 1rem;">Browse Products</a>
-                    </div>
-                <% } else { %>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Date</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Sample Orders -->
-                            <tr>
-                                <td>#12345</td>
-                                <td>2023-09-05</td>
-                                <td>$99.99</td>
-                                <td>Shipped</td>
-                                <td><a href="#" class="pixel-btn">View</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                <% } %>
-            </div>
-        </div>
-    </div>
-</section>
-`}) %>
-=======
-    <title>Document</title>
-</head>
-<body>
-    <h1>Welcome, <%= user.firstName %> <%= user.lastName %>!</h1>
-    <p><strong>Email Verified:</strong> <%= user.isEmailVerified ? "Yes" : "No" %></p>
-    <p><strong>User ID:</strong> <%= user.userId %></p>
-    <p><strong>Email:</strong> <%= user.email %></p>
-    <p><strong>Role:</strong> <%= user.role %></p>
-    <p><strong>Status:</strong> Active</p>
-    <ul>
-    <li><a href="#">Edit Profile</a></li>
-    <% if (user.role === 'admin') { %>
-
-    <li><a href="/users/admin">Admin Dashboard</a></li>
-    <% } %>
-    </ul>
-    <a href="/users/logout">Logout</a>
+             <%- include('/partials/footer.ejs') %>
 
 </body>
 </html>
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca

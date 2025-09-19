@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - Pixel Gamer Shop</title>
+    <title>Contact Us - Pixel Stop</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- CSS -->
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cart.css">
+    <!-- JavaScript -->
+    <script src="/js/contact-validation.js" defer></script>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-container">
             <div class="logo">
-                <img src="/images/logo.svg" alt="Pixel Gamer Shop Logo" onerror="this.src='/images/placeholder.png'">
-                <span>Pixel Gamer Shop</span>
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
             </div>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
                 <li><a href="/products">Products</a></li>
                 <li><a href="/contact">Contact</a></li>
                 <% if (typeof user !== 'undefined' && user) { %>
@@ -28,6 +34,12 @@
                     <li><a href="/users/login">Login</a></li>
                     <li><a href="/users/register">Register</a></li>
                 <% } %>
+                <li>
+                    <a href="/cart" class="cart-icon">
+                        <img src="/images/cart-icon.svg" alt="Cart">
+                        <span id="cart-count">0</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -56,23 +68,27 @@
             <p>Have questions? We're here to help!</p>
         </section>
 
-        <section>
-            <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem auto;">
+        <div class="container">
+            <div class="pixel-box" style="margin-bottom: 2rem;">
+                <h2 style="text-align: center; color: var(--minecraft-green);">Get in Touch</h2>
+                <p style="text-align: center;">
+                    Have questions about our products or services? We're here to help!
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
                 <div class="pixel-box">
-                    <h2>Get in Touch</h2>
-                    <p>We'd love to hear from you! Fill out the form and our team will get back to you as soon as possible.</p>
+                    <h2 style="color: var(--minecraft-green); text-align: center; margin-bottom: 1.5rem;">Send Us a Message</h2>
                     
-                    <form action="/contact/submit" method="POST" id="contactForm">
+                    <form action="/contact" method="POST" id="contactForm">
                         <div class="form-group">
                             <label for="name">Your Name</label>
                             <input type="text" id="name" name="name" required>
                         </div>
-                        
                         <div class="form-group">
-                            <label for="email">Email Address</label>
+                            <label for="email">Your Email</label>
                             <input type="email" id="email" name="email" required>
                         </div>
-                        
                         <div class="form-group">
                             <label for="subject">Subject</label>
                             <select id="subject" name="subject" required>
@@ -84,104 +100,40 @@
                                 <option value="other">Other</option>
                             </select>
                         </div>
-                        
                         <div class="form-group">
                             <label for="message">Message</label>
-                            <textarea id="message" name="message" rows="5" required></textarea>
+                            <textarea id="message" name="message" required></textarea>
                         </div>
-                        
-                        <button type="submit" class="pixel-btn btn-submit">Send Message</button>
+                        <button type="submit" class="pixel-btn btn-submit">SEND MESSAGE</button>
                     </form>
                 </div>
-                
+
                 <div>
                     <div class="pixel-box" style="margin-bottom: 2rem;">
-                        <h2>Customer Support</h2>
-                        <p><strong>Email:</strong> support@pixelgamershop.com</p>
+                        <h3 style="color: var(--minecraft-green);">Our Information</h3>
+                        <p><strong>Address:</strong> 123 Pixel Street, Gaming City</p>
                         <p><strong>Phone:</strong> (555) 123-4567</p>
-                        <p><strong>Hours:</strong> Monday-Friday, 9am-5pm EST</p>
+                        <p><strong>Email:</strong> contact@pixelgamershop.com</p>
+                        <p><strong>Hours:</strong><br>
+                            Mon-Fri: 9AM - 6PM<br>
+                            Sat-Sun: 10AM - 4PM</p>
                     </div>
-                    
-                    <div class="pixel-box" style="margin-bottom: 2rem;">
-                        <h2>Frequently Asked Questions</h2>
-                        <div style="margin-top: 1rem;">
-                            <h3>How long does shipping take?</h3>
-                            <p>Standard shipping usually takes 3-5 business days within the US and 7-14 business days internationally.</p>
-                            
-                            <h3>Do you ship internationally?</h3>
-                            <p>Yes! We ship to most countries worldwide. Shipping costs and delivery times vary by location.</p>
-                            
-                            <h3>What is your return policy?</h3>
-                            <p>We accept returns within 30 days of delivery. Items must be unused and in original packaging.</p>
-                            
-                            <h3>Are your products officially licensed?</h3>
-                            <p>Yes, all our products are officially licensed merchandise from the respective game publishers.</p>
-                        </div>
-                    </div>
-                    
+
                     <div class="pixel-box">
-                        <h2>Connect With Us</h2>
-                        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+                        <h3 style="color: var(--minecraft-green);">Connect With Us</h3>
+                        <div class="social-links" style="margin-top: 1rem;">
                             <a href="#" class="pixel-btn">Discord</a>
-                            <a href="#" class="pixel-btn">Instagram</a>
                             <a href="#" class="pixel-btn">Twitter</a>
-                            <a href="#" class="pixel-btn">YouTube</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Shop</h3>
-                    <ul>
-                        <li><a href="/products?game=minecraft">Minecraft</a></li>
-                        <li><a href="/products?game=stardew-valley">Stardew Valley</a></li>
-                        <li><a href="/products?game=terraria">Terraria</a></li>
-                        <li><a href="/products?game=pokemon">Pokemon</a></li>
-                        <li><a href="/products?game=harvest-moon">Harvest Moon</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Info</h3>
-                    <ul>
-                        <li><a href="/contact">Contact</a></li>
-                        <li><a href="/shipping">Shipping</a></li>
-                        <li><a href="/returns">Returns</a></li>
-                        <li><a href="/faq">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Account</h3>
-                    <ul>
-                        <li><a href="/users/login">Login</a></li>
-                        <li><a href="/users/register">Register</a></li>
-                        <li><a href="/users/dashboard">Dashboard</a></li>
-                        <li><a href="/orders">Orders</a></li>
-                        <li><a href="/wishlist">Wishlist</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Connect</h3>
-                    <p>Follow us on social media for game updates, new merchandise, and exclusive deals!</p>
-                    <div class="social-links">
-                        <a href="#" class="pixel-btn">Discord</a>
-                        <a href="#" class="pixel-btn">Twitter</a>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2025 Pixel Gamer Shop. All rights reserved.
-            </div>
-        </div>
-    </footer>
-    
-    <!-- JavaScript -->
-    <script src="/js/contact-validation.js"></script>
+             <%- include('/partials/footer.ejs') %>
+
 </body>
 </html>
+       

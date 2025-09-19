@@ -1,15 +1,10 @@
 {
   "name": "ws2-ecommerce-project",
   "version": "1.0.0",
-<<<<<<< HEAD
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-=======
-  "main": "index.js",
-  "scripts": {
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,10 +14,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
-<<<<<<< HEAD
     "connect-flash": "^0.1.1",
-=======
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
     "dotenv": "^17.2.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",

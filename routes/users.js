@@ -67,7 +67,6 @@ router.post('/register', async (req, res) => {
             `
         });
 
-<<<<<<< HEAD
         // Redirect with success message
         req.flash('message', 'Registration successful! Please check your email to verify your account.');
         res.redirect('/users/login');
@@ -79,19 +78,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-=======
-        // 6. Simulated verification link
-        res.send(`
-            <h2>Registration Successful!</h2>
-            <p>Please verify your account before logging in.</p>
-            <p><a href="/users/verify/${token}">Click here to verify</a></p>
-        `);
-        } catch (err) {
-            console.error("Error saving user:", err);
-            res.send("Something went wrong.");
-        }
-    });
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
 
 
 
@@ -100,37 +86,30 @@ const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 const dbName = "ecommerceDB";
 
-// Show login form
+// Login route handler
+
 router.get('/login', (req, res) => {
-<<<<<<< HEAD
-    const message = req.query.message || req.flash('message');
-    const error = req.flash('error');
-    res.render('login', { 
-        title: "Login - Pixel Gamer Shop", 
-        message, 
-        error,
-        user: req.session.user || null
-    });
+  // If user is already logged in, redirect to home
+  if (req.session.user) {
+    return res.redirect('/');
+  }
+  
+  // Otherwise show login page
+  res.render('login', { 
+    error: req.flash('error'),
+    message: req.flash('message'),
+    returnTo: req.session.returnTo || '/'
+  });
 });
 
 // Show registration form
 router.get('/register', (req, res) => {
     res.render('register', { 
-        title: "Register - Pixel Gamer Shop",
+        title: "Register - Pixel Stop",
         error: req.flash('error'),
         user: req.session.user || null
     });
 });
-=======
-        const message = req.query.message;
-        res.render('login', { title: "Login", message });
-    });
-
-// Show registration form
-router.get('/register', (req, res) => {
-    res.render('register', { title: "Register" });
-    });
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
 
 // Dashboard route
 router.get('/dashboard', (req, res) => {
@@ -199,7 +178,10 @@ router.post('/login', async (req, res) => {
                 isEmailVerified: user.isEmailVerified
             };
             
-            res.redirect('/users/dashboard');
+            // Redirect to home page or originally requested URL
+            const redirectUrl = req.session.returnTo || '/';
+            delete req.session.returnTo; // Clean up the stored URL
+            res.redirect(redirectUrl);
         } else {
             res.send("Invalid password.");
         }

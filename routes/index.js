@@ -4,18 +4,23 @@ const express = require('express');
 const router = express.Router();
 
 //Home Route
-<<<<<<< HEAD
 router.get('/', (req,res) => {
     res.render('index', {
-        title: "Home - Pixel Gamer Shop",
+        title: "Home - Pixel Stop",
         user: req.session.user || null,
         error: req.flash('error'),
         message: req.flash('message')
     });
-=======
-router.get('/', (req,res) =>{
-    res.render('index', {title: "Home Page", message: "Hello, MongoDB is connected!!!" });
->>>>>>> 2be40e61ca7033bb242098e61f8f3d15fb51deca
+});
+
+// About Route
+router.get('/about', (req, res) => {
+    res.render('about', {
+        title: "About Us - Pixel Stop",
+        user: req.session.user || null,
+        error: req.flash('error'),
+        message: req.flash('message')
+    });
 });
 
 module.exports = router;

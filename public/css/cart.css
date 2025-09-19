@@ -1,0 +1,219 @@
+.cart-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    color: var(--pixel-white);
+    text-decoration: none;
+    margin-left: 1rem;
+}
+
+.cart-icon:hover {
+    text-decoration: none;
+}
+
+.cart-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+#cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--minecraft-green);
+    color: white;
+    border: 2px solid var(--pixel-black);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.cart-notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background-color: var(--pixel-white);
+    border: 4px solid var(--pixel-black);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    z-index: 1000;
+    max-width: 300px;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+.cart-notification p {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.cart-notification .pixel-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.7rem;
+}
+
+.cart-notification.fadeOut {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Mini Cart Preview */
+.mini-cart-preview {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--pixel-white);
+    border: 4px solid var(--pixel-black);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+    width: 300px;
+    padding: 1rem;
+    z-index: 1000;
+    display: none;
+}
+
+.cart-icon:hover .mini-cart-preview {
+    display: block;
+}
+
+.mini-cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px dashed var(--pixel-black);
+}
+
+.mini-cart-item:last-child {
+    border-bottom: none;
+}
+
+.mini-cart-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    margin-right: 0.5rem;
+    border: 2px solid var(--pixel-black);
+}
+
+.mini-cart-item-details {
+    flex: 1;
+}
+
+.mini-cart-item-name {
+    font-size: 0.6rem;
+    margin: 0;
+}
+
+.mini-cart-item-price {
+    font-size: 0.7rem;
+    color: var(--minecraft-green);
+    margin: 0;
+}
+
+.mini-cart-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 2px dashed var(--pixel-black);
+    font-size: 0.8rem;
+}
+
+.mini-cart-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.mini-cart-actions .pixel-btn {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+}
+
+/* Cart Page Styles */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 2px dashed var(--pixel-black);
+}
+
+.cart-table th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid var(--pixel-black);
+    margin-right: 1rem;
+}
+
+.cart-item h4 {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--pixel-black);
+    background-color: var(--pastel-blue);
+    color: var(--pixel-black);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.remove-btn {
+    padding: 0.3rem 0.6rem;
+    background-color: var(--pastel-pink);
+    border: 2px solid var(--pixel-black);
+    color: var(--pixel-black);
+    font-size: 0.7rem;
+    cursor: pointer;
+}
