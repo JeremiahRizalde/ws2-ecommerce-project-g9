@@ -11,6 +11,10 @@ const fs = require('fs');
 
 const mongoose = require("mongoose");
 
+//Lesson 14
+const helmet = require('helmet')
+const compression = require('compression')
+
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
@@ -30,6 +34,12 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Production middleware (should be first)
+app.set('trust proxy', 1); // if behind Render proxy
+
+app.use(helmet()); // sensible security headers - uncomment when you install helmet
+app.use(compression()); // smaller responses - uncomment when you install compression
 
 //Middleware
 app.use(bodyParser.urlencoded({ extended: true}));
@@ -107,6 +117,9 @@ const contactRoute = require('./routes/contact');
 const productsRoute = require('./routes/products');
 const cartRoute = require('./routes/cart'); 
 
+// Health check endpoint (for Render/monitoring)
+app.get('/health', (req, res) => res.type('text').send('ok'));
+
 // TEST 500 ERROR
 // app.get('/boom', () => { throw new Error('test 500') })
 
@@ -119,6 +132,8 @@ app.use('/products', productsRoute);
 app.use('/cart', cartRoute);
 
 
+
+
 //MongoDB Setup
 const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
@@ -127,10 +142,14 @@ const client = new MongoClient(uri);
 app.locals.client = client;
 app.locals.dbName = process.env.DB_NAME || "ecommerceDB";
 
+// place before res.render in your 404 handler
+res.set('Cache-Control', 'no-store')
+res.status(404).render('404', { title: 'Page Not Found' })
 
-
+// combined lightweight logger before the final 404 render
 // 404 handler (must be the last route)
 app.use((req, res, next) => {
+  console.warn('404:', req.method, req.originalUrl, 'referrer:', req.get('referer') || '-');
   res.status(404).render('404', { title: "Page Not Found" });
 });
 
