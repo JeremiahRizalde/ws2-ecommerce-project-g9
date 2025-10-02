@@ -3,7 +3,18 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
 const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend;
+try {
+    // Only initialize Resend if API key is available
+    if (process.env.RESEND_API_KEY) {
+        resend = new Resend(process.env.RESEND_API_KEY);
+        console.log("Resend initialized with API key in password.js");
+    } else {
+        console.warn('RESEND_API_KEY is not set. Password reset functionality will be disabled.');
+    }
+} catch (error) {
+    console.error('Failed to initialize Resend in password.js:', error);
+}
 
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
@@ -12,7 +23,6 @@ const saltRounds = 12;
 router.get('/forgot', (req, res) => {
     res.render('forgot-password', { title: "Forgot Password" });
 });
-
 
 
 // Handle forgot password form submission

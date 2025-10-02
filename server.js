@@ -36,6 +36,12 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
+// near the top of server.js, after session middleware
+app.use((req, res, next) => {
+  res.locals.user = req.session?.user || null
+  next()
+})
+
 // Set views path explicitly
 app.set('views', path.join(__dirname, 'views'));
 
@@ -69,7 +75,17 @@ app.use((req, res, next) => {
 // Route protection middleware
 const requireLogin = (req, res, next) => {
   // Exclude these paths from requiring login
-  const publicPaths = ['/users/login', '/users/register', '/users/forgot-password'];
+  const publicPaths = [
+    '/users/login', 
+    '/users/register', 
+    '/password/forgot',  
+    '/password/reset'    
+  ];
+  
+  // Also allow any path that starts with /password/reset/ (for token-based reset)
+  if (req.path.startsWith('/password/reset/')) {
+    return next();
+  }
   
   if (!req.session.user && !publicPaths.includes(req.path)) {
     // Store the requested URL to redirect back after login
@@ -89,14 +105,18 @@ const usersRoute = require('./routes/users');
 const passwordRoute = require('./routes/password');
 const contactRoute = require('./routes/contact');
 const productsRoute = require('./routes/products');
-const cartRoute = require('./routes/cart'); // Added cart route
+const cartRoute = require('./routes/cart'); 
+
+// TEST 500 ERROR
+// app.get('/boom', () => { throw new Error('test 500') })
+
 
 app.use('/', indexRoute);
 app.use('/users', usersRoute);
 app.use('/password', passwordRoute);
 app.use('/contact', contactRoute);
 app.use('/products', productsRoute);
-app.use('/cart', cartRoute); // Use cart route
+app.use('/cart', cartRoute);
 
 
 //MongoDB Setup
@@ -109,6 +129,18 @@ app.locals.dbName = process.env.DB_NAME || "ecommerceDB";
 
 
 
+// 404 handler (must be the last route)
+app.use((req, res, next) => {
+  res.status(404).render('404', { title: "Page Not Found" });
+});
+
+// Error handler (after the 404 is fine; Express will skip 404 for thrown errors)
+app.use((err, req, res, next) => {
+  console.error(err)
+  res.status(500).render('500', { title: 'Server Error' })
+})
+
+
 async function main() {
     try{
         await client.connect();
@@ -116,12 +148,6 @@ async function main() {
 
         //Select Database
         const database = client.db("ecommerceDB");
-
-        // Comment out the test route that might be overriding our routes
-        // Temporary test route
-        // app.get('/', (req, res) => {
-        //     res.send("Hello, MongoDB is connected!");
-        // });
 
         //Start Server
         app.listen(PORT, ()=> {

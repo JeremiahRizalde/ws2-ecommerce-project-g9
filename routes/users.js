@@ -67,15 +67,11 @@ router.post('/register', async (req, res) => {
             `
         });
 
-        // Redirect with success message
-        req.flash('message', 'Registration successful! Please check your email to verify your account.');
-        res.redirect('/users/login');
-        
-    } catch (error) {
-        console.error("Registration error:", error);
-        req.flash('error', 'An error occurred during registration. Please try again.');
-        res.redirect('/users/register');
-    }
+
+        } catch (err) {
+            console.error("Error saving user:", err);
+            res.send("Something went wrong.");
+        }
 });
 
 
@@ -290,4 +286,11 @@ router.post('/delete/:id', async (req, res) => {
         res.send("Something went wrong.");
     }
 });
+
+// inside routes/users.js (at the end)
+router.use((req, res) => {
+    res.status(404).render('404', { title: 'Page Not Found' })
+})
+
 module.exports = router;
+

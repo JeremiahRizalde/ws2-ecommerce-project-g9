@@ -393,8 +393,8 @@
                     const productsGrid = document.querySelector('.products-grid');
                     
                     products.sort((a, b) => {
-                        const priceA = parseFloat(a.querySelector('.product-price').textContent.replace('$', ''));
-                        const priceB = parseFloat(b.querySelector('.product-price').textContent.replace('$', ''));
+                        const priceA = parseFloat(a.querySelector('.product-price').textContent.replace('P', ''));
+                        const priceB = parseFloat(b.querySelector('.product-price').textContent.replace('P', ''));
                         
                         if (this.value === 'price-low') {
                             return priceA - priceB;
