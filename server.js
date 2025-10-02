@@ -105,7 +105,6 @@ const requireLogin = (req, res, next) => {
   
   next();
 };
-
 // Apply route protection to all routes except public ones
 app.use(requireLogin);
 
