@@ -62,8 +62,7 @@
 <p class="lead">Please try again. If this keeps happening, return to the home
 page.</p>
 <div class="links">
-<!-- 'Try again' simply reloads the site root. If you want to retry the failing URL,
-	 pass it from your error handler into the template (e.g. originalUrl). -->
+<!-- <a class="primary" href="<%= //(req && req.originalUrl) ? req.originalUrl : '/' %>">Try again</a> -->
 <a class="primary" href="/">Try again</a>
 <a href="/">Home</a>
 <% if (user) { %>
