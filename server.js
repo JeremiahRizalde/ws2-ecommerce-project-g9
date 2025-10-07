@@ -119,20 +119,10 @@ const cartRoute = require('./routes/cart');
 // Health check endpoint (for Render/monitoring)
 app.get('/health', (req, res) => res.type('text').send('ok'));
 
-// TEST 500 ERROR (temporary)
+// TEST 500 ERROR 
 app.get('/crash', (req, res) => {
   throw new Error('Test crash');
 });
-
-app.get('/crash-async', async (req, res, next) => {
-  try {
-    throw new Error('Async crash');
-  } catch (err) {
-    next(err);
-  }
-});
-
-
 
 app.use('/', indexRoute);
 app.use('/users', usersRoute);
