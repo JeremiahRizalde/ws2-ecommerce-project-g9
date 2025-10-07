@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title><%= title %></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="/css/style.css">
+<meta charset="utf-8" />
+<title><%= title %></title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<link rel="stylesheet" href="/css/style.css">
     <style>
     .wrap { 
         margin:auto; max-width:640px; padding:2rem;
@@ -54,30 +55,24 @@
     }
     </style>
 </head>
-
 <body>
-    <main class="wrap" role="main" aria-labelledby="title">
-        <div aria-hidden="true" style="font-size:4rem">🧭</div>
-        <h1 id="title">500 ERROR</h1>
-        <p class="lead">The link may be broken or the page may have
-        moved.</p>
-        
-    <div class="links">
-        <a class="primary" href="/">Go to Home</a>
-        <% if (user) { %>
-        <a href="/users/dashboard">Open Dashboard</a>
-        <a href="/users/logout">Logout</a>
-        <% } else { %>
-        <a href="/users/login">Login</a>
-        <a href="/users/register">Create Account</a>
-        <% } %>
-    </div>
-    <!-- optional: lightweight site search via query param -->
-    <form class="search" action="/search" method="GET">
-        <input type="text" name="q" placeholder="Search the site"
-        aria-label="Search" />
-        <button type="submit">Search</button>
-    </form>
-    </main>
+<main class="wrap" role="main" aria-labelledby="title">
+<div aria-hidden="true" style="font-size:4rem">⚠️</div>
+<h1 id="title">We hit a snag</h1>
+<p class="lead">Please try again. If this keeps happening, return to the home
+page.</p>
+<div class="links">
+<a class="primary" href="<%= (req && req.originalUrl) ? req.originalUrl : '/'
+%>">Try again</a>
+<a href="/">Home</a>
+<% if (user) { %>
+<a href="/users/dashboard">Dashboard</a>
+<a href="/users/logout">Logout</a>
+<% } else { %>
+<a href="/users/login">Login</a>
+<a href="/users/register">Register</a>
+<% } %>
+</div>
+</main>
 </body>
 </html>

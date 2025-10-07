@@ -119,8 +119,19 @@ const cartRoute = require('./routes/cart');
 // Health check endpoint (for Render/monitoring)
 app.get('/health', (req, res) => res.type('text').send('ok'));
 
-// TEST 500 ERROR
-// app.get('/boom', () => { throw new Error('test 500') })
+// TEST 500 ERROR (temporary)
+app.get('/crash', (req, res) => {
+  throw new Error('Test crash');
+});
+
+app.get('/crash-async', async (req, res, next) => {
+  try {
+    throw new Error('Async crash');
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 
 app.use('/', indexRoute);
@@ -148,12 +159,13 @@ app.use((req, res, next) => {
   res.status(404).render('404', { title: "Page Not Found" });
 });
 
-// Error handler (after the 404 is fine; Express will skip 404 for thrown errors)
-app.use((err, req, res, next) => {
-  console.error(err)
-  res.status(500).render('500', { title: 'Server Error' })
-})
 
+// 500 handler (last)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  if (res.headersSent) return next(err);
+  res.status(500).render('500', { title: 'Server Error' });
+});
 
 async function main() {
     try{
