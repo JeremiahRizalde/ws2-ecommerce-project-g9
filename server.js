@@ -124,6 +124,14 @@ app.get('/crash', (req, res) => {
   throw new Error('Test crash');
 });
 
+app.get('/crash-async', async (req, res, next) => {
+  try {
+    throw new Error('Async crash');
+    } catch (err) {
+    next(err);
+    }
+});
+
 app.use('/', indexRoute);
 app.use('/users', usersRoute);
 app.use('/password', passwordRoute);
@@ -154,8 +162,10 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   if (res.headersSent) return next(err);
-  res.status(500).render('500', { title: 'Server Error' });
+    res.status(500).render('500', { title: 'Server Error' });
 });
+
+
 
 async function main() {
     try{

@@ -55,23 +55,25 @@
     }
     </style>
 </head>
-
 <body>
-    <main class="wrap" role="main" aria-labelledby="title">
-        <div aria-hidden="true" style="font-size:4rem">🧭</div>
-        <h1>500 — Something went wrong</h1>
-    <p>We’re fixing it. Please try again later.</p>
-        
-    <div class="links">
-        <a class="primary" href="/">Go to Home</a>
-        <% if (user) { %>
-        <a href="/users/dashboard">Open Dashboard</a>
-        <a href="/users/logout">Logout</a>
-        <% } else { %>
-        <a href="/users/login">Login</a>
-        <a href="/users/register">Create Account</a>
-        <% } %>
-    </div>
-    </main>
+<main class="wrap" role="main" aria-labelledby="title">
+<div aria-hidden="true" style="font-size:4rem">⚠️</div>
+<h1 id="title">We hit a snag</h1>
+<p class="lead">Please try again. If this keeps happening, return to the home
+page.</p>
+<div class="links">
+<!-- 'Try again' simply reloads the site root. If you want to retry the failing URL,
+	 pass it from your error handler into the template (e.g. originalUrl). -->
+<a class="primary" href="/">Try again</a>
+<a href="/">Home</a>
+<% if (user) { %>
+<a href="/users/dashboard">Dashboard</a>
+<a href="/users/logout">Logout</a>
+<% } else { %>
+<a href="/users/login">Login</a>
+<a href="/users/register">Register</a>
+<% } %>
+</div>
+</main>
 </body>
 </html>
