@@ -23,6 +23,7 @@
     "helmet": "^8.1.0",
     "mongodb": "^6.20.0",
     "mongoose": "^8.18.1",
+    "node-fetch": "^2.7.0",
     "node.js": "^0.0.1-security",
     "resend": "^6.1.0",
     "uuid": "^11.1.0"

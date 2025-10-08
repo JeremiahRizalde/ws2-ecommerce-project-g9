@@ -1,5 +1,5 @@
 //server.js
-
+const verifyTurnstile = require('./utils/turnstileVerify');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
@@ -45,6 +45,10 @@ app.set('trust proxy', 1); // if behind Render proxy
 app.use(bodyParser.urlencoded({ extended: true}));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use((req, res, next) => {
+  res.locals.message = (req.flash && req.flash('message')) || null;
+  next();
+});
 
 // near the top of server.js, after session middleware
 app.use((req, res, next) => {

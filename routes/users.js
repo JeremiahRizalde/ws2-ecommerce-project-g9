@@ -1,4 +1,6 @@
 // routes/users.js
+const verifyTurnstile = require('../utils/turnstileVerify');
+
 const express = require('express');
 const router = express.Router();
 const { MongoClient } = require('mongodb');
@@ -18,6 +20,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Registration (POST)
 router.post('/register', async (req, res) => {
+    const token = req.body['cf-turnstile-response'];
+    const result = await verifyTurnstile(token, req.ip);
+    if (!result.success) {
+        return res.status(400).render('register', { error: 'Verification failed. Please try again.' });
+    }
+
     try {
         const db = req.app.locals.client.db(req.app.locals.dbName);
         const usersCollection = db.collection('users');
@@ -140,6 +148,13 @@ router.get('/logout', (req, res) => {
 
 // Handle login form submission
 router.post('/login', async (req, res) => {
+    const token = req.body['cf-turnstile-response'];
+    const result = await verifyTurnstile(token, req.ip);
+
+    if (!result.success) {
+        return res.status(400).render('login', { error: 'Verification failed. Please try again.' });
+    }
+
     try {
         const db = req.app.locals.client.db(req.app.locals.dbName);
         const usersCollection = db.collection('users');
@@ -256,19 +271,19 @@ router.get('/edit/:id', async (req, res) => {
 
 // Handle update form
 router.post('/edit/:id', async (req, res) => {
-try {
-await client.connect();
-const db = client.db(dbName);
-const usersCollection = db.collection('users');
-await usersCollection.updateOne(
-{ _id: new ObjectId(req.params.id) },
-{ $set: { name: req.body.name, email: req.body.email } }
-);
-res.redirect('/users/list');
-} catch (err) {
-console.error("Error updating user:", err);
-res.send("Something went wrong.");
-}
+    try {
+        await client.connect();
+        const db = client.db(dbName);
+        const usersCollection = db.collection('users');
+        await usersCollection.updateOne(
+            { _id: new ObjectId(req.params.id) },
+            { $set: { name: req.body.name, email: req.body.email } }
+        );
+        res.redirect('/users/list');
+    } catch (err) {
+        console.error("Error updating user:", err);
+        res.send("Something went wrong.");
+    }
 });
 
 

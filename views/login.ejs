@@ -79,12 +79,17 @@
                             <input type="password" id="password" name="password" required>
                         </div>
                         
+                        <!-- Turnstile widget -->
+                        <div class="cf-turnstile" data-sitekey="<%= process.env.TURNSTILE_SITEKEY %>"></div>
                         <button type="submit" class="pixel-btn btn-submit">Login</button>
                         
                         <p style="margin-top: 1rem; text-align: center;">
                             <a href="/password/forgot">Forgot Password?</a>
                         </p>
                     </form>
+
+                    <!-- Turnstile script -->
+                    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" asyncdefer></script>
                     
                     <div style="margin-top: 2rem; text-align: center; border-top: 2px dashed var(--pixel-black); padding-top: 1rem;">
                         <p>Don't have an account?</p>
