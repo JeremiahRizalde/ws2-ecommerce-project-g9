@@ -123,6 +123,12 @@ const cartRoute = require('./routes/cart');
 // Health check endpoint (for Render/monitoring)
 app.get('/health', (req, res) => res.type('text').send('ok'));
 
+// Serve sitemap.xml with correct content type
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml');
+  res.sendFile(path.join(__dirname, 'sitemap.xml'));
+});
+
 // TEST 500 ERROR 
 app.get('/crash', (req, res) => {
   throw new Error('Test crash');
