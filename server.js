@@ -93,7 +93,9 @@ const requireLogin = (req, res, next) => {
     '/users/login', 
     '/users/register', 
     '/password/forgot',  
-    '/password/reset'    
+    '/password/reset',
+    '/sitemap.xml',      // Allow public access to sitemap
+    '/health'            // Allow public access to health check
   ];
   
   // Also allow any path that starts with /password/reset/ (for token-based reset)
