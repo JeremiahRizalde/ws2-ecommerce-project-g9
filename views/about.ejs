@@ -3,7 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Pixel Stop</title>
+    <title><%= title %>About Us - Pixel Stop</title>
+    <meta name="description" content="Learn more about <%= name %> — web systems developer and student innovator.">
+    <meta name="keywords" content="about page, web systems, EJS, SEO, student project">
+    <meta name="author" content="<%= name %>">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="About <%= name %>">
+    <meta property="og:description" content="<%= description %>">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/public/images/profile.png">
+    <meta name="twitter:card" content="summary_large_image">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/cart.css">
@@ -60,15 +70,15 @@
     <!-- Main Content -->
     <main>
         <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-blue), var(--pastel-green));">
-            <h1>About Pixel Stop</h1>
-            <p>Your ultimate destination for merchandise from your favorite pixel games!</p>
+            <h1><%= title %></h1>
+            <p><%= description %></p>
         </section>
 
         <section>
             <div class="container" style="max-width: 800px; margin: 2rem auto;">
                 <div class="pixel-box">
                     <h2>Our Story</h2>
-                    <p>Pixel Stop was founded in 2023 by a group of passionate gamers who wanted to create a one-stop shop for merchandise from their favorite pixel-art and indie games.</p>
+                    <p>Pixel Stop was founded in 2023 by a group of passionate gamers with <%= name %> as lead, they wanted to create a one-stop shop for merchandise from their favorite pixel-art and indie games.</p>
                     
                     <p>What started as a small online store run out of a garage has grown into the premier destination for gaming merchandise, with a focus on titles like Minecraft, Stardew Valley, Terraria, and other beloved pixel games.</p>
                     <hr>

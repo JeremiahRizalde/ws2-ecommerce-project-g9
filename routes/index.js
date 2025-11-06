@@ -17,6 +17,8 @@ router.get('/', (req,res) => {
 router.get('/about', (req, res) => {
     res.render('about', {
         title: "About Us - Pixel Stop",
+        name: "Jeremiah Rizalde",
+        description:"Your ultimate destination for merchandise from your favorite pixel games!",
         user: req.session.user || null,
         error: req.flash('error'),
         message: req.flash('message')
@@ -44,4 +46,3 @@ router.get('/privacypolicy', (req, res) => {
 });
 
 module.exports = router;
-
