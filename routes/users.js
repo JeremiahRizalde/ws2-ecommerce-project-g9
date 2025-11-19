@@ -116,6 +116,12 @@ router.get('/dashboard', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/users/login?message=timeout'); // redirect with message
     }
+    
+    // Redirect admins to admin dashboard
+    if (req.session.user.role === 'admin') {
+        return res.redirect('/admin/dashboard');
+    }
+    
     res.render('dashboard', { title: "User Dashboard", user: req.session.user });
 });
 
@@ -185,7 +191,12 @@ router.post('/login', async (req, res) => {
                 isEmailVerified: user.isEmailVerified
             };
             
-            res.redirect('/users/dashboard');
+            // Redirect based on role
+            if (user.role === 'admin') {
+                res.redirect('/admin/dashboard');
+            } else {
+                res.redirect('/users/dashboard');
+            }
         } else {
             res.send("Invalid password.");
         }

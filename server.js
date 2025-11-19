@@ -121,6 +121,7 @@ const passwordRoute = require('./routes/password');
 const contactRoute = require('./routes/contact');
 const productsRoute = require('./routes/products');
 const cartRoute = require('./routes/cart'); 
+const adminRoute = require('./routes/admin'); 
 
 // Health check endpoint (for Render/monitoring)
 app.get('/health', (req, res) => res.type('text').send('ok'));
@@ -150,6 +151,7 @@ app.use('/password', passwordRoute);
 app.use('/contact', contactRoute);
 app.use('/products', productsRoute);
 app.use('/cart', cartRoute);
+app.use('/admin', adminRoute);
 
 
 

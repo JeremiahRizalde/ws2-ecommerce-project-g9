@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Pixel Stop</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cart.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/admin/products">Manage Products</a></li>
+                <li><a href="/admin/dashboard">Dashboard</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-success">
+                <%= message %>
+            </div>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--minecraft-green), var(--pastel-purple));">
+            <h1>Admin Dashboard</h1>
+            <p>Welcome, <%= user.firstName %> <%= user.lastName %></p>
+        </section>
+
+        <section>
+            <div class="container dashboard-container">
+                <!-- Sidebar Navigation -->
+                <div class="dashboard-sidebar">
+                    <div class="pixel-box">
+                        <h3>Admin Menu</h3>
+                        <ul class="dashboard-menu">
+                            <li><a href="/admin/dashboard" class="active">Dashboard</a></li>
+                            <li><a href="/admin/products">Product Management</a></li>
+                            <li><a href="/users/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="dashboard-content">
+                    <div class="pixel-box">
+                        <h2>Admin Overview</h2>
+                        <div style="margin-top: 1.5rem;">
+                            <p><strong>Email:</strong> <%= user.email %></p>
+                            <p><strong>Name:</strong> <%= user.firstName %> <%= user.lastName %></p>
+                            <p><strong>Role:</strong> <span style="color: var(--minecraft-green);">Administrator</span></p>
+                            <p><strong>User ID:</strong> <%= user.userId %></p>
+                        </div>
+                    </div>
+
+                    <div class="pixel-box">
+                        <h2>Quick Actions</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                            <a href="/admin/products" class="pixel-btn" style="text-align: center; padding: 1.5rem;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📦</div>
+                                <div>Manage Products</div>
+                            </a>
+                            <a href="/users/admin" class="pixel-btn" style="text-align: center; padding: 1.5rem;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
+                                <div>Manage Users</div>
+                            </a>
+                            <a href="/admin/productsView" class="pixel-btn" style="text-align: center; padding: 1.5rem;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🛍️</div>
+                                <div>View Store</div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pixel-box">
+                        <h2>System Information</h2>
+                        <div style="margin-top: 1.5rem;">
+                            <p><strong>Server Status:</strong> <span style="color: var(--success-green);">Online</span></p>
+                            <p><strong>Database:</strong> <span style="color: var(--success-green);">Connected</span></p>
+                            <p><strong>Last Login:</strong> <%= new Date().toLocaleDateString() %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('/partials/footer.ejs') %>
+</body>
+</html>
