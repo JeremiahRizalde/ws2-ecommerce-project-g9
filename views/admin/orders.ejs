@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - Pixel Stop Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .admin-orders-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .orders-table {
+            background: white;
+            border: 4px solid var(--pixel-black);
+            padding: 1rem;
+            overflow-x: auto;
+        }
+        
+        .orders-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .orders-table th,
+        .orders-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 2px solid var(--pixel-black);
+            font-size: 0.65rem;
+        }
+        
+        .orders-table th {
+            background-color: var(--pastel-blue);
+        }
+        
+        .status-badge {
+            padding: 0.3rem 0.6rem;
+            border: 2px solid var(--pixel-black);
+            display: inline-block;
+            font-size: 0.55rem;
+        }
+        
+        .status-to_pay { background-color: #ffeb3b; }
+        .status-to_ship { background-color: #ff9800; }
+        .status-to_receive { background-color: #2196f3; color: white; }
+        .status-completed { background-color: #4caf50; color: white; }
+        .status-refund { background-color: #9c27b0; color: white; }
+        .status-cancelled { background-color: #f44336; color: white; }
+        
+        .order-details {
+            background: #f5f5f5;
+            padding: 1rem;
+            border: 2px solid var(--pixel-black);
+            margin-top: 0.5rem;
+            font-size: 0.6rem;
+        }
+        
+        .order-items {
+            margin-top: 0.5rem;
+        }
+        
+        .order-items ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .order-items li {
+            padding: 0.25rem 0;
+        }
+        
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.6rem;
+        }
+        
+        .status-update-form {
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+        
+        .status-update-form select {
+            padding: 0.3rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.5rem;
+            border: 2px solid var(--pixel-black);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin/dashboard">Dashboard</a></li>
+                <li><a href="/admin/products">Manage Products</a></li>
+                <li><a href="/admin/orders">Manage Orders</a></li>
+                <li><a href="/users/admin">Manage Users</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-success">
+                <%= message %>
+            </div>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-purple), var(--minecraft-green));">
+            <h1>Order Management</h1>
+            <p>View and manage all customer orders</p>
+        </section>
+
+        <div class="admin-orders-container">
+            <!-- Orders Table -->
+            <div class="orders-table">
+                <h2 style="margin-bottom: 1.5rem;">All Orders (<%= orders.length %>)</h2>
+                
+                <% if (orders.length === 0) { %>
+                    <p style="text-align: center; padding: 2rem; color: #666;">No orders yet.</p>
+                <% } else { %>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% orders.forEach((order, index) => { %>
+                                <tr>
+                                    <td><%= order.orderId.substring(0, 8) %>...</td>
+                                    <td>
+                                        <%= order.customerName %><br>
+                                        <small><%= order.customerEmail %></small>
+                                    </td>
+                                    <td><%= order.items.length %> item(s)</td>
+                                    <td>₱<%= order.totalAmount.toFixed(2) %></td>
+                                    <td>
+                                        <span class="status-badge status-<%= order.orderStatus %>">
+                                            <%= order.orderStatus.replace('_', ' ').toUpperCase() %>
+                                        </span>
+                                    </td>
+                                    <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                                    <td>
+                                        <button class="pixel-btn btn-small" onclick="toggleOrderDetails('<%= order._id %>')">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="order-details-<%= order._id %>" style="display: none;">
+                                    <td colspan="7">
+                                        <div class="order-details">
+                                            <h3 style="margin-bottom: 1rem;">Order Details</h3>
+                                            <p><strong>Full Order ID:</strong> <%= order.orderId %></p>
+                                            <p><strong>Customer:</strong> <%= order.customerName %> (<%= order.customerEmail %>)</p>
+                                            <p><strong>User ID:</strong> <%= order.userId %></p>
+                                            
+                                            <div class="order-items">
+                                                <strong>Items:</strong>
+                                                <ul>
+                                                    <% order.items.forEach(item => { %>
+                                                        <li>
+                                                            • <%= item.name %> 
+                                                            (₱<%= item.price.toFixed(2) %> × <%= item.quantity %>) 
+                                                            = ₱<%= item.subtotal.toFixed(2) %>
+                                                        </li>
+                                                    <% }); %>
+                                                </ul>
+                                            </div>
+                                            
+                                            <p><strong>Total Amount:</strong> ₱<%= order.totalAmount.toFixed(2) %></p>
+                                            <p><strong>Created:</strong> <%= new Date(order.createdAt).toLocaleString() %></p>
+                                            <p><strong>Last Updated:</strong> <%= new Date(order.updatedAt).toLocaleString() %></p>
+                                            
+                                            <div style="margin-top: 1rem;">
+                                                <strong>Update Status:</strong>
+                                                <form action="/admin/orders/update-status/<%= order._id %>" method="POST" class="status-update-form">
+                                                    <select name="orderStatus" required>
+                                                        <option value="to_pay" <%= order.orderStatus === 'to_pay' ? 'selected' : '' %>>To Pay</option>
+                                                        <option value="to_ship" <%= order.orderStatus === 'to_ship' ? 'selected' : '' %>>To Ship</option>
+                                                        <option value="to_receive" <%= order.orderStatus === 'to_receive' ? 'selected' : '' %>>To Receive</option>
+                                                        <option value="completed" <%= order.orderStatus === 'completed' ? 'selected' : '' %>>Completed</option>
+                                                        <option value="refund" <%= order.orderStatus === 'refund' ? 'selected' : '' %>>Refund</option>
+                                                        <option value="cancelled" <%= order.orderStatus === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                                    </select>
+                                                    <button type="submit" class="pixel-btn btn-small">Update</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <%- include('/partials/footer.ejs') %>
+
+    <script>
+        function toggleOrderDetails(orderId) {
+            const detailsRow = document.getElementById(`order-details-${orderId}`);
+            if (detailsRow.style.display === 'none') {
+                detailsRow.style.display = 'table-row';
+            } else {
+                detailsRow.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

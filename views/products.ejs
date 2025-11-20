@@ -104,6 +104,9 @@
     </style>
 </head>
 <body>
+    <!-- Hidden user data for cart.js -->
+    <div data-user-id="<%= typeof user !== 'undefined' && user ? user.userId : 'guest' %>" style="display: none;"></div>
+    
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-container">

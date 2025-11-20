@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Pixel Stop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .orders-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .order-card {
+            background: white;
+            border: 4px solid var(--pixel-black);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--pixel-black);
+        }
+        
+        .order-id {
+            font-size: 0.8rem;
+            color: var(--minecraft-green);
+        }
+        
+        .order-date {
+            font-size: 0.65rem;
+            color: #666;
+        }
+        
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border: 2px solid var(--pixel-black);
+            display: inline-block;
+            font-size: 0.6rem;
+        }
+        
+        .status-to_pay { background-color: #ffeb3b; }
+        .status-to_ship { background-color: #ff9800; }
+        .status-to_receive { background-color: #2196f3; color: white; }
+        .status-completed { background-color: #4caf50; color: white; }
+        .status-refund { background-color: #9c27b0; color: white; }
+        .status-cancelled { background-color: #f44336; color: white; }
+        
+        .order-items {
+            margin: 1rem 0;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.75rem;
+        }
+        
+        .order-total {
+            text-align: right;
+            font-size: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--pixel-black);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <li><a href="/users/dashboard">Dashboard</a></li>
+                <li><a href="/orders/my-orders">My Orders</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-success">
+                <%= message %>
+            </div>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-blue), var(--pastel-green));">
+            <h1>My Orders</h1>
+            <p>Track and view your order history</p>
+        </section>
+
+        <div class="orders-container">
+            <% if (orders.length === 0) { %>
+                <div class="pixel-box" style="text-align: center; padding: 3rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+                    <h2>No orders yet</h2>
+                    <p style="margin: 1rem 0;">Start shopping to see your orders here!</p>
+                    <a href="/products" class="pixel-btn">Browse Products</a>
+                </div>
+            <% } else { %>
+                <h2 style="margin-bottom: 1.5rem;">Order History (<%= orders.length %>)</h2>
+                
+                <% orders.forEach(order => { %>
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-id">Order #<%= order.orderId.substring(0, 8).toUpperCase() %></div>
+                                <div class="order-date"><%= new Date(order.createdAt).toLocaleString() %></div>
+                            </div>
+                            <div>
+                                <span class="status-badge status-<%= order.orderStatus %>">
+                                    <%= order.orderStatus.replace('_', ' ').toUpperCase() %>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-items">
+                            <strong style="font-size: 0.8rem;">Items:</strong>
+                            <% order.items.forEach(item => { %>
+                                <div class="order-item">
+                                    <span><%= item.name %> × <%= item.quantity %></span>
+                                    <span>₱<%= item.subtotal.toFixed(2) %></span>
+                                </div>
+                            <% }); %>
+                        </div>
+                        
+                        <div class="order-total">
+                            <strong>Total: ₱<%= order.totalAmount.toFixed(2) %></strong>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } %>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <%- include('/partials/footer.ejs') %>
+</body>
+</html>

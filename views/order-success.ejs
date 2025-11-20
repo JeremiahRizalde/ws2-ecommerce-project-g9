@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart - Pixel Stop</title>
+    <title>Order Success - Pixel Stop</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/cart.css">
 </head>
 <body>
-    <!-- Hidden user data for cart.js -->
-    <div data-user-id="<%= typeof user !== 'undefined' && user ? user.userId : 'guest' %>" style="display: none;"></div>
-    
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-container">
@@ -26,45 +22,46 @@
                 <li><a href="/contact">Contact</a></li>
                 <% if (typeof user !== 'undefined' && user) { %>
                     <li><a href="/users/dashboard">Dashboard</a></li>
+                    <li><a href="/orders/my-orders">My Orders</a></li>
                     <li><a href="/users/logout">Logout</a></li>
                 <% } else { %>
                     <li><a href="/users/login">Login</a></li>
                     <li><a href="/users/register">Register</a></li>
                 <% } %>
-                <li>
-                    <a href="/cart" class="cart-icon">
-                        <img src="/images/cart-icon.svg" alt="Cart">
-                        <span id="cart-count">0</span>
-                    </a>
-                </li>
             </ul>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main>
-        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-yellow), var(--pastel-green));">
-            <h1>Shopping Cart</h1>
-            <p>Cart functionality coming soon</p>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--minecraft-green), var(--pastel-blue));">
+            <h1>Order Placed Successfully!</h1>
+            <p>Thank you for your purchase</p>
         </section>
 
         <section>
-            <div class="container" style="max-width: 900px; margin: 2rem auto;">
-                <div class="pixel-box" style="text-align: center; padding: 3rem;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🛒</div>
-                    <h2>Cart Feature Not Available</h2>
-                    <p style="margin: 1.5rem 0;">The shopping cart is not part of the current lesson.</p>
-                    <p style="margin: 1rem 0;">To place test orders, use the test checkout form.</p>
+            <div class="container">
+                <div class="pixel-box" style="max-width: 600px; margin: 2rem auto; text-align: center;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+                    <h2>Your order has been placed!</h2>
+                    
+                    <% if (typeof message !== 'undefined' && message) { %>
+                        <p style="margin: 1.5rem 0;"><%= message %></p>
+                    <% } %>
+                    
+                    <p style="margin: 1.5rem 0;">
+                        We've received your order and will process it shortly. 
+                        You can view your order status in your order history.
+                    </p>
+                    
                     <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                        <a href="/orders/test-checkout" class="pixel-btn">Test Checkout</a>
-                        <a href="/products" class="pixel-btn">Browse Products</a>
+                        <a href="/orders/my-orders" class="pixel-btn">View My Orders</a>
+                        <a href="/products" class="pixel-btn">Continue Shopping</a>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <%- include('/partials/footer.ejs') %>
 </body>
 </html>

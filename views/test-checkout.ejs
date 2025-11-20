@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Checkout - Pixel Stop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/users/dashboard">Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>Test Checkout</h1>
+            <p>Quick test form for placing an order</p>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="pixel-box" style="max-width: 600px; margin: 2rem auto;">
+                    <h2>Place Test Order</h2>
+                    <p style="margin-bottom: 1.5rem; font-size: 0.75rem;">
+                        This form helps you test the checkout process. Select products from your database.
+                    </p>
+                    
+                    <form action="/orders/checkout" method="POST">
+                        <h3>Add Items to Order:</h3>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <label style="font-size: 0.75rem;">Product ID 1:</label>
+                            <input type="text" name="items[0][productId]" placeholder="Enter MongoDB _id" required style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;">
+                            <label style="font-size: 0.75rem; margin-top: 0.5rem; display: block;">Quantity:</label>
+                            <input type="number" name="items[0][quantity]" value="1" min="1" required style="width: 100px; padding: 0.5rem; margin-top: 0.5rem;">
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <label style="font-size: 0.75rem;">Product ID 2:</label>
+                            <input type="text" name="items[1][productId]" placeholder="Enter MongoDB _id (optional)" style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;">
+                            <label style="font-size: 0.75rem; margin-top: 0.5rem; display: block;">Quantity:</label>
+                            <input type="number" name="items[1][quantity]" value="1" min="1" style="width: 100px; padding: 0.5rem; margin-top: 0.5rem;">
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <label style="font-size: 0.75rem;">Product ID 3:</label>
+                            <input type="text" name="items[2][productId]" placeholder="Enter MongoDB _id (optional)" style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;">
+                            <label style="font-size: 0.75rem; margin-top: 0.5rem; display: block;">Quantity:</label>
+                            <input type="number" name="items[2][quantity]" value="1" min="1" style="width: 100px; padding: 0.5rem; margin-top: 0.5rem;">
+                        </div>
+                        
+                        <button type="submit" class="pixel-btn" style="margin-top: 1rem;">Place Order</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('/partials/footer.ejs') %>
+</body>
+</html>

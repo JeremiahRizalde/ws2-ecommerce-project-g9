@@ -177,4 +177,71 @@ router.post('/products/delete/:id', async (req, res) => {
     }
 });
 
+// GET - Admin orders page
+router.get('/orders', async (req, res) => {
+    try {
+        await client.connect();
+        const database = client.db('ecommerceDB');
+        const ordersCollection = database.collection('orders');
+        
+        const orders = await ordersCollection.find({}).sort({ createdAt: -1 }).toArray();
+        
+        res.render('admin/orders', {
+            orders,
+            user: req.session.user,
+            message: req.flash('message') || '',
+            error: req.flash('error') || ''
+        });
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        req.flash('error', 'Failed to load orders');
+        res.redirect('/admin/dashboard');
+    } finally {
+        await client.close();
+    }
+});
+
+// POST - Update order status
+router.post('/orders/update-status/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { orderStatus } = req.body;
+        
+        // Validation
+        const validStatuses = ['to_pay', 'to_ship', 'to_receive', 'completed', 'refund', 'cancelled'];
+        if (!validStatuses.includes(orderStatus)) {
+            req.flash('error', 'Invalid order status');
+            return res.redirect('/admin/orders');
+        }
+        
+        await client.connect();
+        const database = client.db('ecommerceDB');
+        const ordersCollection = database.collection('orders');
+        
+        const result = await ordersCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { 
+                $set: { 
+                    orderStatus: orderStatus,
+                    updatedAt: new Date()
+                }
+            }
+        );
+        
+        if (result.matchedCount === 0) {
+            req.flash('error', 'Order not found');
+        } else {
+            req.flash('message', `Order status updated to "${orderStatus.replace('_', ' ')}"`);
+        }
+        
+        res.redirect('/admin/orders');
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        req.flash('error', 'Failed to update order status');
+        res.redirect('/admin/orders');
+    } finally {
+        await client.close();
+    }
+});
+
 module.exports = router;
