@@ -73,7 +73,8 @@
                         <h3>Account Menu</h3>
                         <ul class="dashboard-menu">
                             <li><a href="/users/dashboard" class="active">Dashboard</a></li>
-                            <li><a href="#">Edit Profile</a></li>
+                            <li><a href="/users/profile">Edit Profile</a></li>
+                            <li><a href="/users/orders">My Orders</a></li>
                             <% if (user.role === 'admin') { %>
                                 <li><a href="/users/admin">Admin Panel</a></li>
                             <% } %>
@@ -102,35 +103,51 @@
                     </div>
 
                     <div class="pixel-box">
-                        <h2>Recent Orders</h2>
-                        <% if (true) { /* No orders yet condition */ %>
-                            <div style="text-align: center; padding: 2rem 0;">
-                                <p>You haven't placed any orders yet.</p>
-                                <a href="/products" class="pixel-btn" style="margin-top: 1rem;">Browse Products</a>
-                            </div>
-                        <% } else { %>
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Order ID</th>
-                                        <th>Date</th>
-                                        <th>Total</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Sample Orders -->
-                                    <tr>
-                                        <td>#12345</td>
-                                        <td>2023-09-05</td>
-                                        <td>$99.99</td>
-                                        <td>Shipped</td>
-                                        <td><a href="#" class="pixel-btn">View</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        <% } %>
+                        <h2>Order Summary</h2>
+                        <p style="margin-bottom: 1rem;">Total Orders: <strong><%= totalOrders %></strong></p>
+                        
+                        <table class="data-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>To Pay</td>
+                                    <td><%= statusCounts.to_pay %></td>
+                                </tr>
+                                <tr>
+                                    <td>To Ship</td>
+                                    <td><%= statusCounts.to_ship %></td>
+                                </tr>
+                                <tr>
+                                    <td>To Receive</td>
+                                    <td><%= statusCounts.to_receive %></td>
+                                </tr>
+                                <tr>
+                                    <td>Completed</td>
+                                    <td><%= statusCounts.completed %></td>
+                                </tr>
+                                <tr>
+                                    <td>Return / Refund</td>
+                                    <td><%= statusCounts.refund %></td>
+                                </tr>
+                                <tr>
+                                    <td>Cancelled</td>
+                                    <td><%= statusCounts.cancelled %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pixel-box">
+                        <h2>Quick Links</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                            <a href="/users/orders" class="pixel-btn" style="text-align: center;">View All Orders</a>
+                            <a href="/products" class="pixel-btn" style="text-align: center;">Browse Products</a>
+                        </div>
                     </div>
                 </div>
             </div>

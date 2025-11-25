@@ -124,6 +124,7 @@ const cartRoute = require('./routes/cart');
 const adminRoute = require('./routes/admin');
 const ordersRoute = require('./routes/orders'); 
 
+
 // Health check endpoint (for Render/monitoring)
 app.get('/health', (req, res) => res.type('text').send('ok'));
 

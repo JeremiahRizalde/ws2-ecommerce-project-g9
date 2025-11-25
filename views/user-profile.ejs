@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Pixel Stop</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cart.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li> 
+                <li><a href="/products">Products</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <li><a href="/users/dashboard">Dashboard</a></li>
+                    <li><a href="/users/logout">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/users/login">Login</a></li>
+                    <li><a href="/users/register">Register</a></li>
+                <% } %>
+                <li>
+                    <a href="/cart" class="cart-icon">
+                        <img src="/images/cart-icon.svg" alt="Cart">
+                        <span id="cart-count">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-blue), var(--pastel-purple));">
+            <h1>User Profile</h1>
+            <p>View and update your account information</p>
+        </section>
+
+        <section>
+            <div class="container dashboard-container">
+                <!-- Sidebar Navigation -->
+                <div class="dashboard-sidebar">
+                    <div class="pixel-box">
+                        <h3>Account Menu</h3>
+                        <ul class="dashboard-menu">
+                            <li><a href="/users/dashboard">Dashboard</a></li>
+                            <li><a href="/users/profile" class="active">Edit Profile</a></li>
+                            <li><a href="/users/orders">My Orders</a></li>
+                            <% if (user.role === 'admin') { %>
+                                <li><a href="/users/admin">Admin Panel</a></li>
+                            <% } %>
+                            <li><a href="/users/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="dashboard-content">
+                    <% if (updated) { %>
+                        <div class="alert alert-success" style="margin-bottom: 1.5rem;">
+                            Profile updated successfully.
+                        </div>
+                    <% } %>
+
+                    <div class="pixel-box">
+                        <h2>Account Information</h2>
+                        <div style="margin-top: 1.5rem;">
+                            <p><strong>Email:</strong> <%= user.email %></p>
+                            <% if (user.firstName || user.lastName) { %>
+                                <p>
+                                    <strong>Name:</strong>
+                                    <%= user.firstName || "" %> <%= user.lastName || "" %>
+                                </p>
+                            <% } %>
+                            <p><strong>User ID:</strong> <%= user.userId %></p>
+                            <p><strong>Role:</strong> <%= user.role %></p>
+                        </div>
+                    </div>
+
+                    <div class="pixel-box">
+                        <h2>Edit Contact Details</h2>
+                        <form action="/users/profile" method="POST" style="margin-top: 1.5rem;">
+                            <div style="margin-bottom: 1rem;">
+                                <label for="address" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Address:</label>
+                                <textarea
+                                    id="address"
+                                    name="address"
+                                    rows="3"
+                                    style="width: 100%; padding: 0.5rem; font-family: 'Press Start 2P', monospace; font-size: 0.7rem; border: 2px solid var(--dark-gray); background: var(--light-bg);"
+                                ><%= user.address || "" %></textarea>
+                            </div>
+                            <div style="margin-bottom: 1.5rem;">
+                                <label for="contactNumber" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Contact Number:</label>
+                                <input
+                                    type="text"
+                                    id="contactNumber"
+                                    name="contactNumber"
+                                    value="<%= user.contactNumber || "" %>"
+                                    style="width: 100%; padding: 0.5rem; font-family: 'Press Start 2P', monospace; font-size: 0.7rem; border: 2px solid var(--dark-gray); background: var(--light-bg);"
+                                />
+                            </div>
+                            <div style="display: flex; gap: 1rem;">
+                                <button type="submit" class="pixel-btn">Save Profile</button>
+                                <a href="/users/dashboard" class="pixel-btn" style="display: inline-block; text-decoration: none;">Back to Dashboard</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/footer.ejs') %>
+
+</body>
+</html>

@@ -111,8 +111,8 @@ router.get('/register', (req, res) => {
     });
 });
 
-// Dashboard route
-router.get('/dashboard', (req, res) => {
+// Dashboard route - User overview and order counts
+router.get('/dashboard', async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/users/login?message=timeout'); // redirect with message
     }
@@ -122,7 +122,154 @@ router.get('/dashboard', (req, res) => {
         return res.redirect('/admin/dashboard');
     }
     
-    res.render('dashboard', { title: "User Dashboard", user: req.session.user });
+    try {
+        const db = req.app.locals.client.db(req.app.locals.dbName);
+        const ordersCollection = db.collection("orders");
+        const user = req.session.user;
+        
+        // Load all orders for this user
+        const userOrders = await ordersCollection
+            .find({ userId: user.userId })
+            .sort({ createdAt: -1 })
+            .toArray();
+        
+        // Prepare counts per status
+        const statusCounts = {
+            to_pay: 0,
+            to_ship: 0,
+            to_receive: 0,
+            completed: 0,
+            refund: 0,
+            cancelled: 0
+        };
+        
+        userOrders.forEach(order => {
+            const status = order.orderStatus;
+            if (statusCounts[status] !== undefined) {
+                statusCounts[status] += 1;
+            }
+        });
+        
+        const totalOrders = userOrders.length;
+        
+        res.render('dashboard', { 
+            title: "User Dashboard", 
+            user: req.session.user,
+            statusCounts,
+            totalOrders
+        });
+    } catch (err) {
+        console.error("Error loading user dashboard:", err);
+        res.status(500).send("Error loading dashboard.");
+    }
+});
+
+// GET /users/profile - view profile
+router.get('/profile', async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/users/login?message=timeout');
+    }
+    
+    try {
+        const db = req.app.locals.client.db(req.app.locals.dbName);
+        const usersCollection = db.collection("users");
+        const userFromSession = req.session.user;
+        
+        // Load the latest data from DB
+        const user = await usersCollection.findOne({ userId: userFromSession.userId });
+        
+        const updated = req.query.updated === "1";
+        
+        res.render("user-profile", {
+            title: "User Profile",
+            user,
+            updated
+        });
+    } catch (err) {
+        console.error("Error loading user profile:", err);
+        res.status(500).send("Error loading profile.");
+    }
+});
+
+// POST /users/profile - update profile
+router.post('/profile', async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/users/login?message=timeout');
+    }
+    
+    try {
+        const db = req.app.locals.client.db(req.app.locals.dbName);
+        const usersCollection = db.collection("users");
+        const userFromSession = req.session.user;
+        
+        const address = (req.body.address || "").trim();
+        const contactNumber = (req.body.contactNumber || "").trim();
+        
+        await usersCollection.updateOne(
+            { userId: userFromSession.userId },
+            {
+                $set: {
+                    address,
+                    contactNumber
+                }
+            }
+        );
+        
+        // Optionally update session copy
+        req.session.user.address = address;
+        req.session.user.contactNumber = contactNumber;
+        
+        // Redirect back with a query flag
+        res.redirect("/users/profile?updated=1");
+    } catch (err) {
+        console.error("Error updating user profile:", err);
+        res.status(500).send("Error updating profile.");
+    }
+});
+
+// GET /users/orders - purchase history for the logged-in user
+router.get("/orders", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/users/login?message=timeout');
+    }
+    
+    try {
+        const db = req.app.locals.client.db(req.app.locals.dbName);
+        const ordersCollection = db.collection("orders");
+        const userFromSession = req.session.user;
+        
+        // Load all orders for this user
+        const userOrders = await ordersCollection
+            .find({ userId: userFromSession.userId })
+            .sort({ createdAt: -1 })
+            .toArray();
+        
+        // Group orders by status
+        const ordersByStatus = {
+            to_pay: [],
+            to_ship: [],
+            to_receive: [],
+            completed: [],
+            refund: [],
+            cancelled: []
+        };
+        
+        userOrders.forEach(order => {
+            const status = order.orderStatus;
+            if (ordersByStatus[status]) {
+                ordersByStatus[status].push(order);
+            }
+        });
+        
+        res.render("user-orders", {
+            title: "My Orders",
+            user: userFromSession,
+            ordersByStatus
+        });
+    } catch (err) {
+        console.error("Error loading user orders:", err);
+        res.status(500).send("Error loading orders.");
+    }
 });
 
 // Admin view

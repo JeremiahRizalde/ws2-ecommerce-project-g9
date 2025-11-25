@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Pixel Stop</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cart.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li> 
+                <li><a href="/products">Products</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <li><a href="/users/dashboard">Dashboard</a></li>
+                    <li><a href="/users/logout">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/users/login">Login</a></li>
+                    <li><a href="/users/register">Register</a></li>
+                <% } %>
+                <li>
+                    <a href="/cart" class="cart-icon">
+                        <img src="/images/cart-icon.svg" alt="Cart">
+                        <span id="cart-count">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-blue), var(--pastel-purple));">
+            <h1>My Orders</h1>
+            <p>View your purchase history by status</p>
+        </section>
+
+        <section>
+            <div class="container dashboard-container">
+                <!-- Sidebar Navigation -->
+                <div class="dashboard-sidebar">
+                    <div class="pixel-box">
+                        <h3>Account Menu</h3>
+                        <ul class="dashboard-menu">
+                            <li><a href="/users/dashboard">Dashboard</a></li>
+                            <li><a href="/users/profile">Edit Profile</a></li>
+                            <li><a href="/users/orders" class="active">My Orders</a></li>
+                            <% if (user.role === 'admin') { %>
+                                <li><a href="/users/admin">Admin Panel</a></li>
+                            <% } %>
+                            <li><a href="/users/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="dashboard-content">
+                    <!-- To Pay -->
+                    <div class="pixel-box">
+                        <h2>To Pay</h2>
+                        <% if (ordersByStatus.to_pay.length === 0) { %>
+                            <p>No orders in this status.</p>
+                        <% } else { %>
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Total Amount</th>
+                                        <th>Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% ordersByStatus.to_pay.forEach(order => { %>
+                                        <tr>
+                                            <td><%= order.orderId %></td>
+                                            <td>₱<%= Number(order.totalAmount).toFixed(2) %></td>
+                                            <td>
+                                                <% if (order.createdAt && order.createdAt.toLocaleString) { %>
+                                                    <%= order.createdAt.toLocaleString() %>
+                                                <% } else { %>
+                                                    <%= order.createdAt %>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } %>
+                    </div>
+
+                    <!-- To Ship -->
+                    <div class="pixel-box">
+                        <h2>To Ship</h2>
+                        <% if (ordersByStatus.to_ship.length === 0) { %>
+                            <p>No orders in this status.</p>
+                        <% } else { %>
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Total Amount</th>
+                                        <th>Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% ordersByStatus.to_ship.forEach(order => { %>
+                                        <tr>
+                                            <td><%= order.orderId %></td>
+                                            <td>₱<%= Number(order.totalAmount).toFixed(2) %></td>
+                                            <td>
+                                                <% if (order.createdAt && order.createdAt.toLocaleString) { %>
+                                                    <%= order.createdAt.toLocaleString() %>
+                                                <% } else { %>
+                                                    <%= order.createdAt %>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } %>
+                    </div>
+
+                    <!-- To Receive -->
+                    <div class="pixel-box">
+                        <h2>To Receive</h2>
+                        <% if (ordersByStatus.to_receive.length === 0) { %>
+                            <p>No orders in this status.</p>
+                        <% } else { %>
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Total Amount</th>
+                                        <th>Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% ordersByStatus.to_receive.forEach(order => { %>
+                                        <tr>
+                                            <td><%= order.orderId %></td>
+                                            <td>₱<%= Number(order.totalAmount).toFixed(2) %></td>
+                                            <td>
+                                                <% if (order.createdAt && order.createdAt.toLocaleString) { %>
+                                                    <%= order.createdAt.toLocaleString() %>
+                                                <% } else { %>
+                                                    <%= order.createdAt %>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } %>
+                    </div>
+
+                    <!-- Completed -->
+                    <div class="pixel-box">
+                        <h2>Completed</h2>
+                        <% if (ordersByStatus.completed.length === 0) { %>
+                            <p>No orders in this status.</p>
+                        <% } else { %>
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Total Amount</th>
+                                        <th>Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% ordersByStatus.completed.forEach(order => { %>
+                                        <tr>
+                                            <td><%= order.orderId %></td>
+                                            <td>₱<%= Number(order.totalAmount).toFixed(2) %></td>
+                                            <td>
+                                                <% if (order.createdAt && order.createdAt.toLocaleString) { %>
+                                                    <%= order.createdAt.toLocaleString() %>
+                                                <% } else { %>
+                                                    <%= order.createdAt %>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } %>
+                    </div>
+
+                    <!-- Return / Refund -->
+                    <div class="pixel-box">
+                        <h2>Return / Refund</h2>
+                        <% if (ordersByStatus.refund.length === 0) { %>
+                            <p>No orders in this status.</p>
+                        <% } else { %>
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Total Amount</th>
+                                        <th>Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% ordersByStatus.refund.forEach(order => { %>
+                                        <tr>
+                                            <td><%= order.orderId %></td>
+                                            <td>₱<%= Number(order.totalAmount).toFixed(2) %></td>
+                                            <td>
+                                                <% if (order.createdAt && order.createdAt.toLocaleString) { %>
+                                                    <%= order.createdAt.toLocaleString() %>
+                                                <% } else { %>
+                                                    <%= order.createdAt %>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } %>
+                    </div>
+
+                    <!-- Cancelled -->
+                    <div class="pixel-box">
+                        <h2>Cancelled</h2>
+                        <% if (ordersByStatus.cancelled.length === 0) { %>
+                            <p>No orders in this status.</p>
+                        <% } else { %>
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Total Amount</th>
+                                        <th>Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% ordersByStatus.cancelled.forEach(order => { %>
+                                        <tr>
+                                            <td><%= order.orderId %></td>
+                                            <td>₱<%= Number(order.totalAmount).toFixed(2) %></td>
+                                            <td>
+                                                <% if (order.createdAt && order.createdAt.toLocaleString) { %>
+                                                    <%= order.createdAt.toLocaleString() %>
+                                                <% } else { %>
+                                                    <%= order.createdAt %>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/footer.ejs') %>
+
+</body>
+</html>
