@@ -63,5 +63,18 @@
     </main>
 
     <%- include('/partials/footer.ejs') %>
+    
+    <!-- Hidden user data for cart.js -->
+    <div data-user-id="<%= typeof user !== 'undefined' && user ? user.userId : 'guest' %>" style="display: none;"></div>
+    
+    <script src="/js/cart.js"></script>
+    <script>
+        // Clear cart after successful order
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clear the cart from localStorage
+            cart = [];
+            saveCart();
+        });
+    </script>
 </body>
 </html>

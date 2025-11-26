@@ -45,19 +45,49 @@
     <main>
         <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-yellow), var(--pastel-green));">
             <h1>Shopping Cart</h1>
-            <p>Cart functionality coming soon</p>
+            <p>Review your items before checkout</p>
         </section>
 
         <section>
             <div class="container" style="max-width: 900px; margin: 2rem auto;">
-                <div class="pixel-box" style="text-align: center; padding: 3rem;">
+                <!-- Empty Cart State -->
+                <div id="empty-cart" class="pixel-box" style="text-align: center; padding: 3rem; display: none;">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🛒</div>
-                    <h2>Cart Feature Not Available</h2>
-                    <p style="margin: 1.5rem 0;">The shopping cart is not part of the current lesson.</p>
-                    <p style="margin: 1rem 0;">To place test orders, use the test checkout form.</p>
-                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                        <a href="/orders/test-checkout" class="pixel-btn">Test Checkout</a>
-                        <a href="/products" class="pixel-btn">Browse Products</a>
+                    <h2>Your Cart is Empty</h2>
+                    <p style="margin: 1.5rem 0;">Start shopping to add items to your cart!</p>
+                    <a href="/products" class="pixel-btn">Browse Products</a>
+                </div>
+
+                <!-- Cart Items -->
+                <div id="cart-items" style="display: none;">
+                    <div class="pixel-box">
+                        <h2>Cart Items</h2>
+                        <div id="items-list" style="margin-top: 1.5rem;">
+                            <!-- Cart items will be loaded here by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Cart Summary -->
+                    <div class="pixel-box" style="margin-top: 2rem;">
+                        <h2>Order Summary</h2>
+                        <div style="margin-top: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem;">
+                                <span>Subtotal:</span>
+                                <span id="cart-subtotal">₱0.00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: bold; padding-top: 1rem; border-top: 2px solid var(--pixel-black);">
+                                <span>Total:</span>
+                                <span id="cart-total">₱0.00</span>
+                            </div>
+                            
+                            <% if (typeof user !== 'undefined' && user) { %>
+                                <button id="checkout-btn" class="pixel-btn" style="width: 100%; margin-bottom: 0.5rem;">Proceed to Checkout</button>
+                            <% } else { %>
+                                <a href="/users/login" class="pixel-btn" style="width: 100%; display: block; text-align: center; text-decoration: none;">Login to Checkout</a>
+                            <% } %>
+                            
+                            <a href="/products" class="pixel-btn" style="width: 100%; display: block; text-align: center; text-decoration: none; margin-top: 0.5rem; background: white; color: var(--pixel-black);">Continue Shopping</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -66,5 +96,116 @@
 
     <!-- Footer -->
     <%- include('/partials/footer.ejs') %>
+    
+    <script src="/js/cart.js"></script>
+    <script>
+        // Load and display cart items
+        document.addEventListener('DOMContentLoaded', function() {
+            displayCart();
+            
+            // Checkout button handler
+            const checkoutBtn = document.getElementById('checkout-btn');
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener('click', function() {
+                    if (cart.length === 0) {
+                        alert('Your cart is empty!');
+                        return;
+                    }
+                    
+                    // Prepare order items for checkout
+                    const orderItems = cart.map(item => ({
+                        productId: item.id,
+                        quantity: item.quantity
+                    }));
+                    
+                    // Create a form and submit it
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/orders/checkout';
+                    
+                    const itemsInput = document.createElement('input');
+                    itemsInput.type = 'hidden';
+                    itemsInput.name = 'items';
+                    itemsInput.value = JSON.stringify(orderItems);
+                    
+                    form.appendChild(itemsInput);
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            }
+        });
+        
+        function displayCart() {
+            const emptyCartDiv = document.getElementById('empty-cart');
+            const cartItemsDiv = document.getElementById('cart-items');
+            const itemsList = document.getElementById('items-list');
+            
+            if (cart.length === 0) {
+                emptyCartDiv.style.display = 'block';
+                cartItemsDiv.style.display = 'none';
+                return;
+            }
+            
+            emptyCartDiv.style.display = 'none';
+            cartItemsDiv.style.display = 'block';
+            
+            // Clear existing items
+            itemsList.innerHTML = '';
+            
+            let subtotal = 0;
+            
+            // Display each cart item
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item';
+                itemDiv.style.cssText = 'display: flex; gap: 1rem; padding: 1rem; border-bottom: 2px solid var(--pixel-black); align-items: center;';
+                
+                itemDiv.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" style="width: 80px; height: 80px; object-fit: cover; border: 2px solid var(--pixel-black);">
+                    <div style="flex: 1;">
+                        <h3 style="font-size: 0.9rem; margin-bottom: 0.5rem;">${item.name}</h3>
+                        <p style="font-size: 0.75rem; color: var(--minecraft-green);">₱${item.price.toFixed(2)}</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button onclick="updateQuantity(${index}, -1)" class="pixel-btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">-</button>
+                        <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+                        <button onclick="updateQuantity(${index}, 1)" class="pixel-btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">+</button>
+                    </div>
+                    <div style="min-width: 100px; text-align: right; font-weight: bold;">₱${itemTotal.toFixed(2)}</div>
+                    <button onclick="removeFromCart(${index})" class="pixel-btn" style="padding: 0.5rem; font-size: 0.65rem; background: var(--error-red);">Remove</button>
+                `;
+                
+                itemsList.appendChild(itemDiv);
+            });
+            
+            // Update totals
+            document.getElementById('cart-subtotal').textContent = `₱${subtotal.toFixed(2)}`;
+            document.getElementById('cart-total').textContent = `₱${subtotal.toFixed(2)}`;
+        }
+        
+        function updateQuantity(index, change) {
+            if (cart[index]) {
+                cart[index].quantity += change;
+                
+                if (cart[index].quantity <= 0) {
+                    cart.splice(index, 1);
+                }
+                
+                saveCart();
+                displayCart();
+            }
+        }
+        
+        function removeFromCart(index) {
+            if (confirm('Remove this item from cart?')) {
+                cart.splice(index, 1);
+                saveCart();
+                displayCart();
+            }
+        }
+    </script>
 </body>
 </html>

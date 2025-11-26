@@ -100,6 +100,10 @@ router.post('/checkout', requireLogin, async (req, res) => {
         await ordersCollection.insertOne(newOrder);
         
         req.flash('message', `Order placed successfully! Order ID: ${newOrder.orderId}`);
+        
+        // Signal to clear cart (frontend will handle this)
+        req.session.clearCart = true;
+        
         res.redirect('/orders/success');
     } catch (err) {
         console.error('Error during checkout:', err);

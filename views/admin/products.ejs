@@ -130,22 +130,6 @@
         </div>
     </nav>
 
-    <!-- Flash Messages -->
-    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
-        <div class="container">
-            <div class="alert alert-success">
-                <%= message %>
-            </div>
-        </div>
-    <% } %>
-    
-    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
-        <div class="container">
-            <div class="alert alert-danger">
-                <%= error %>
-            </div>
-        </div>
-    <% } %>
 
     <!-- Main Content -->
     <main>
@@ -155,49 +139,60 @@
         </section>
 
         <div class="admin-products-container">
-            <!-- Add Product Form -->
-            <div class="add-product-form">
-                <h2>Add New Product</h2>
-                <form action="/admin/products/add" method="POST">
+            <!-- Search and Filter Form -->
+            <div class="add-product-form" style="margin-bottom: 1.5rem;">
+                <h2>Search Products</h2>
+                <form action="/admin/products" method="GET" style="margin-top: 1rem;">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="title">Product Title *</label>
-                            <input type="text" id="title" name="title" required>
+                            <label for="search">Search by Name</label>
+                            <input type="text" id="search" name="search" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" placeholder="Enter product name...">
                         </div>
                         <div class="form-group">
-                            <label for="price">Price (PHP) *</label>
-                            <input type="number" id="price" name="price" step="0.01" min="0" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="genre">Genre/Game *</label>
-                            <select id="genre" name="genre" required>
-                                <option value="">Select a game...</option>
-                                <option value="minecraft">Minecraft</option>
-                                <option value="stardewvalley">Stardew Valley</option>
-                                <option value="terraria">Terraria</option>
-                                <option value="pokemon">Pokemon</option>
-                                <option value="harvestmoon">Harvest Moon</option>
-                                <option value="other">Other</option>
+                            <label for="category">Filter by Category</label>
+                            <select id="category" name="category">
+                                <option value="">All Categories</option>
+                                <option value="minecraft" <%= typeof categoryFilter !== 'undefined' && categoryFilter === 'minecraft' ? 'selected' : '' %>>Minecraft</option>
+                                <option value="stardewvalley" <%= typeof categoryFilter !== 'undefined' && categoryFilter === 'stardewvalley' ? 'selected' : '' %>>Stardew Valley</option>
+                                <option value="terraria" <%= typeof categoryFilter !== 'undefined' && categoryFilter === 'terraria' ? 'selected' : '' %>>Terraria</option>
+                                <option value="pokemon" <%= typeof categoryFilter !== 'undefined' && categoryFilter === 'pokemon' ? 'selected' : '' %>>Pokemon</option>
+                                <option value="harvestmoon" <%= typeof categoryFilter !== 'undefined' && categoryFilter === 'harvestmoon' ? 'selected' : '' %>>Harvest Moon</option>
+                                <option value="other" <%= typeof categoryFilter !== 'undefined' && categoryFilter === 'other' ? 'selected' : '' %>>Other</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="imageUrl">Image URL *</label>
-                            <input type="url" id="imageUrl" name="imageUrl" required placeholder="https://example.com/image.jpg">
-                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="description">Description *</label>
-                        <textarea id="description" name="description" required></textarea>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button type="submit" class="pixel-btn">Search</button>
+                        <a href="/admin/products" class="pixel-btn" style="background: white; color: var(--pixel-black); text-decoration: none;">Clear</a>
                     </div>
-                    
-                    <button type="submit" class="pixel-btn">Add Product</button>
                 </form>
             </div>
 
+            <!-- Add Product Button -->
+            <div class="add-product-form">
+                <h2>Product Management</h2>
+                <p style="font-size: 0.65rem; margin: 1rem 0;">Manage your product catalog below. Click "Add New Product" to create a product.</p>
+                <a href="/admin/products/new" class="pixel-btn">Add New Product</a>
+            </div>
+
+            <!-- Message Display -->
+            <% if (message) { %>
+                <div class="container">
+                    <div
+                        style="
+                            padding: 10px;
+                            margin-bottom: 15px;
+                            border: 1px solid <%= message.type === 'success' ? 'green' : 'red' %>;
+                            background-color: <%= message.type === 'success' ? '#e6ffed' : '#ffe6e6' %>;
+                            color: <%= message.type === 'success' ? 'green' : 'red' %>;
+                            font-size: 0.75rem;
+                        "
+                    >
+                        <%= message.text %>
+                    </div>
+                </div>
+            <% } %>
+            
             <!-- Products List -->
             <div class="products-table">
                 <h2 style="margin-bottom: 1.5rem;">Current Products (<%= products.length %>)</h2>
@@ -226,53 +221,9 @@
                                     <td>₱<%= product.price.toFixed(2) %></td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="pixel-btn btn-small" onclick="toggleEditForm('<%= product._id %>')">Edit</button>
-                                            <form action="/admin/products/delete/<%= product._id %>" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this product?')">
+                                            <a href="/admin/products/edit/<%= product.productId || product._id %>" class="pixel-btn btn-small">Edit</a>
+                                            <form action="/admin/products/delete/<%= product._id %>" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this product? This action cannot be undone.')">
                                                 <button type="submit" class="pixel-btn btn-small" style="background-color: #ff4444;">Delete</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr id="edit-form-<%= product._id %>" style="display: none;">
-                                    <td colspan="5">
-                                        <div class="edit-form">
-                                            <h3 style="margin-bottom: 1rem;">Edit Product</h3>
-                                            <form action="/admin/products/edit/<%= product._id %>" method="POST">
-                                                <div class="form-row">
-                                                    <div class="form-group">
-                                                        <label>Product Title</label>
-                                                        <input type="text" name="title" value="<%= product.title %>" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Price (PHP)</label>
-                                                        <input type="number" name="price" value="<%= product.price %>" step="0.01" min="0" required>
-                                                    </div>
-                                                </div>
-                                                <div class="form-row">
-                                                    <div class="form-group">
-                                                        <label>Genre/Game</label>
-                                                        <select name="genre" required>
-                                                            <option value="minecraft" <%= product.genre === 'minecraft' ? 'selected' : '' %>>Minecraft</option>
-                                                            <option value="stardewvalley" <%= product.genre === 'stardewvalley' ? 'selected' : '' %>>Stardew Valley</option>
-                                                            <option value="terraria" <%= product.genre === 'terraria' ? 'selected' : '' %>>Terraria</option>
-                                                            <option value="pokemon" <%= product.genre === 'pokemon' ? 'selected' : '' %>>Pokemon</option>
-                                                            <option value="harvestmoon" <%= product.genre === 'harvestmoon' ? 'selected' : '' %>>Harvest Moon</option>
-                                                            <option value="other" <%= product.genre === 'other' ? 'selected' : '' %>>Other</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Image URL</label>
-                                                        <input type="url" name="imageUrl" value="<%= product.imageUrl %>" required>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Description</label>
-                                                    <textarea name="description" required><%= product.description %></textarea>
-                                                </div>
-                                                <div style="display: flex; gap: 0.5rem;">
-                                                    <button type="submit" class="pixel-btn btn-small">Save Changes</button>
-                                                    <button type="button" class="pixel-btn btn-small" onclick="toggleEditForm('<%= product._id %>')">Cancel</button>
-                                                </div>
                                             </form>
                                         </div>
                                     </td>
@@ -287,16 +238,5 @@
 
     <!-- Footer -->
     <%- include('/partials/footer.ejs') %>
-
-    <script>
-        function toggleEditForm(productId) {
-            const editRow = document.getElementById(`edit-form-${productId}`);
-            if (editRow.style.display === 'none') {
-                editRow.style.display = 'table-row';
-            } else {
-                editRow.style.display = 'none';
-            }
-        }
-    </script>
 </body>
 </html>

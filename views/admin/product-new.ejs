@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Pixel Stop Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .product-form {
+            background: white;
+            border: 4px solid var(--pixel-black);
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--pixel-black);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.65rem;
+            background: var(--light-bg);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .error-list {
+            background: #ffe6e6;
+            border: 3px solid #ff4444;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .error-list ul {
+            margin: 0.5rem 0 0 1.5rem;
+            font-size: 0.65rem;
+            color: #cc0000;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/admin/products">Manage Products</a></li>
+                <li><a href="/users/dashboard">Dashboard</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-purple), var(--minecraft-green));">
+            <h1>Add New Product</h1>
+            <p>Fill in the details below to add a product to your catalog</p>
+        </section>
+
+        <div class="form-container">
+            <!-- Error Messages -->
+            <% if (errors && errors.length > 0) { %>
+                <div class="error-list">
+                    <p style="font-weight: bold; margin-bottom: 0.5rem; font-size: 0.75rem;">⚠️ Please fix the following errors:</p>
+                    <ul>
+                        <% errors.forEach(function(err) { %>
+                            <li><%= err %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+
+            <div class="product-form">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1rem;">Product Information</h2>
+                
+                <form action="/admin/products" method="POST">
+                    <div class="form-group">
+                        <label for="name">Product Name *</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="<%= formData && formData.name ? formData.name : '' %>"
+                            placeholder="Enter product name (min 2 characters)"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            placeholder="Enter product description (min 5 characters)"
+                        ><%= formData && formData.description ? formData.description : '' %></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price (PHP) *</label>
+                        <input
+                            type="text"
+                            id="price"
+                            name="price"
+                            value="<%= formData && formData.price ? formData.price : '' %>"
+                            placeholder="0.00"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category/Genre *</label>
+                        <select id="category" name="category">
+                            <option value="">Select a category...</option>
+                            <option value="minecraft" <%= formData && formData.category === 'minecraft' ? 'selected' : '' %>>Minecraft</option>
+                            <option value="stardewvalley" <%= formData && formData.category === 'stardewvalley' ? 'selected' : '' %>>Stardew Valley</option>
+                            <option value="terraria" <%= formData && formData.category === 'terraria' ? 'selected' : '' %>>Terraria</option>
+                            <option value="pokemon" <%= formData && formData.category === 'pokemon' ? 'selected' : '' %>>Pokemon</option>
+                            <option value="harvestmoon" <%= formData && formData.category === 'harvestmoon' ? 'selected' : '' %>>Harvest Moon</option>
+                            <option value="other" <%= formData && formData.category === 'other' ? 'selected' : '' %>>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="imageUrl">Image URL</label>
+                        <input
+                            type="text"
+                            id="imageUrl"
+                            name="imageUrl"
+                            value="<%= formData && formData.imageUrl ? formData.imageUrl : '' %>"
+                            placeholder="https://example.com/image.jpg"
+                        />
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="pixel-btn">Add Product</button>
+                        <a href="/admin/products" class="pixel-btn" style="background: white; color: var(--pixel-black); text-decoration: none; display: inline-block;">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <%- include('/partials/footer.ejs') %>
+</body>
+</html>
