@@ -1,0 +1,228 @@
+/* --- From orders.ejs --- */
+.admin-orders-container {
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: 2rem 1rem;
+}
+.orders-table {
+	background: white;
+	border: 4px solid var(--pixel-black);
+
+/* --- From products.ejs --- */
+	padding: 1rem;
+	overflow-x: auto;
+}
+.orders-table table {
+	width: 100%;
+	border-collapse: collapse;
+}
+.orders-table th,
+.orders-table td {
+	padding: 0.75rem;
+	text-align: left;
+	border-bottom: 2px solid var(--pixel-black);
+	font-size: 0.65rem;
+}
+.orders-table th {
+	background-color: var(--pastel-blue);
+}
+.status-badge {
+	padding: 0.3rem 0.6rem;
+	border: 2px solid var(--pixel-black);
+	display: inline-block;
+	font-size: 0.55rem;
+}
+.status-to_pay { background-color: #ffeb3b; }
+.status-to_ship { background-color: #ff9800; }
+.status-to_receive { background-color: #2196f3; color: white; }
+.status-completed { background-color: #4caf50; color: white; }
+.status-refund { background-color: #9c27b0; color: white; }
+.status-cancelled { background-color: #f44336; color: white; }
+.order-details {
+	background: #f5f5f5;
+	padding: 1rem;
+	border: 2px solid var(--pixel-black);
+	margin-top: 0.5rem;
+	font-size: 0.6rem;
+}
+.order-items {
+	margin-top: 0.5rem;
+}
+.order-items ul {
+	list-style: none;
+	padding: 0;
+}
+.order-items li {
+	padding: 0.25rem 0;
+}
+.btn-small {
+	padding: 0.4rem 0.8rem;
+	font-size: 0.6rem;
+}
+.status-update-form {
+	display: inline-block;
+	margin-left: 0.5rem;
+}
+.status-update-form select {
+	padding: 0.3rem;
+	font-family: 'Press Start 2P', cursive;
+	font-size: 0.5rem;
+	border: 2px solid var(--pixel-black);
+}
+
+/* --- From product-edit.ejs & product-new.ejs --- */
+.form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+.product-form {
+    background: white;
+    border: 4px solid var(--pixel-black);
+    padding: 2rem;
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--pixel-black);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.65rem;
+    background: var(--light-bg);
+}
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+.error-list {
+    background: #ffe6e6;
+    border: 3px solid #ff4444;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+.error-list ul {
+    margin: 0.5rem 0 0 1.5rem;
+    font-size: 0.65rem;
+    color: #cc0000;
+}
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* --- From reports-sales.ejs --- */
+.admin-reports-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+.report-section {
+    background: white;
+    border: 4px solid var(--pixel-black);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+.report-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+.filters-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+}
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--pixel-black);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.65rem;
+}
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+.summary-card {
+    background: var(--pastel-blue);
+    border: 3px solid var(--pixel-black);
+    padding: 1.5rem;
+    text-align: center;
+}
+.summary-card h3 {
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+.summary-card .value {
+    font-size: 1.5rem;
+    color: var(--pixel-black);
+    margin-top: 0.5rem;
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+.data-table th,
+.data-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 2px solid var(--pixel-black);
+    font-size: 0.65rem;
+}
+.data-table th {
+    background-color: var(--pastel-blue);
+}
+.data-table td {
+    background-color: white;
+}
+.no-data-message {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-size: 0.75rem;
+}
+.chart-container {
+    position: relative;
+    height: 400px;
+    margin-top: 1rem;
+}
+@media (max-width: 768px) {
+    .filters-form {
+        grid-template-columns: 1fr;
+    }
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+    .chart-container {
+        height: 300px;
+    }
+}

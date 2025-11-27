@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/adminstyle.css">
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin/dashboard">Dashboard</a></li>
+                <li><a href="/admin/products">Manage Products</a></li>
+                <li><a href="/admin/orders">Manage Orders</a></li>
+                <li><a href="/admin/reports/sales">Sales Reports</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-purple), var(--minecraft-green));">
+            <h1>Sales Overview</h1>
+            <p>Analyze your sales performance with detailed reports and charts</p>
+        </section>
+
+        <div class="admin-reports-container">
+            <!-- Filters Section -->
+            <div class="report-section">
+                <h2>Filters</h2>
+                <form action="/admin/reports/sales" method="GET" class="filters-form">
+                    <div class="form-group">
+                        <label for="startDate">Start date:</label>
+                        <input
+                            type="date"
+                            id="startDate"
+                            name="startDate"
+                            value="<%= filters.startDate %>"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End date:</label>
+                        <input
+                            type="date"
+                            id="endDate"
+                            name="endDate"
+                            value="<%= filters.endDate %>"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Order status:</label>
+                        <select id="status" name="status">
+                            <option value="all" <%= filters.status === 'all' ? 'selected' : '' %>>
+                                All statuses
+                            </option>
+                            <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>
+                                Completed only
+                            </option>
+                            <option value="to_pay" <%= filters.status === 'to_pay' ? 'selected' : '' %>>
+                                To Pay
+                            </option>
+                            <option value="to_ship" <%= filters.status === 'to_ship' ? 'selected' : '' %>>
+                                To Ship
+                            </option>
+                            <option value="to_receive" <%= filters.status === 'to_receive' ? 'selected' : '' %>>
+                                To Receive
+                            </option>
+                            <option value="refund" <%= filters.status === 'refund' ? 'selected' : '' %>>
+                                Return / Refund
+                            </option>
+                            <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected' : '' %>>
+                                Cancelled
+                            </option>
+                        </select>
+                    </div>
+                    <div class="filter-buttons" style="grid-column: 1 / -1;">
+                        <button type="submit" class="pixel-btn">Apply filters</button>
+                        <a href="/admin/reports/sales" class="pixel-btn" style="background: white; color: var(--pixel-black); text-decoration: none;">Clear</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="report-section">
+                <h2>Summary</h2>
+                <% if (dailySales.length === 0) { %>
+                    <p class="no-data-message">No sales data found for the selected filters.</p>
+                <% } else { %>
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <h3>Total Sales</h3>
+                            <div class="value">₱<%= summary.totalSales.toFixed(2) %></div>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Total Orders</h3>
+                            <div class="value"><%= summary.totalOrders %></div>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Average Order Value</h3>
+                            <div class="value">₱<%= summary.averageOrderValue.toFixed(2) %></div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Daily Sales Table -->
+            <div class="report-section">
+                        <h2>Daily Sales Table</h2>
+                <% if (dailySales.length === 0) { %>
+                    <p class="no-data-message">No daily sales to display.</p>
+                <% } else { %>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Total Sales</th>
+                                <th>Number of Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% dailySales.forEach(function(day) { %>
+                                <tr>
+                                    <td><%= day.date %></td>
+                                    <td>₱<%= Number(day.totalSales).toFixed(2) %></td>
+                                    <td><%= day.orderCount %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } %>
+            </div>
+
+            <!-- Sales Chart -->
+            <div class="report-section">
+                        <h2>Sales Chart</h2>
+                <% if (dailySales.length === 0) { %>
+                    <p class="no-data-message">No sales data to chart for the selected filters.</p>
+                <% } else { %>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                    <script>
+                        // Get data from server-side variables
+                        const salesLabels = <%- JSON.stringify(labels) %>;
+                        const salesValues = <%- JSON.stringify(salesData) %>;
+                        
+                        const ctx = document.getElementById("salesChart").getContext("2d");
+                        new Chart(ctx, {
+                            type: "bar", // you can change to "line" if you prefer
+                            data: {
+                                labels: salesLabels,
+                                datasets: [
+                                    {
+                                        label: "Total Sales per Day (₱)",
+                                        data: salesValues,
+                                        backgroundColor: "rgba(124, 179, 66, 0.6)",
+                                        borderColor: "rgba(124, 179, 66, 1)",
+                                        borderWidth: 2
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: function(value) {
+                                                return '₱' + value.toLocaleString();
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top'
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <%- include('/partials/footer.ejs') %>
+</body>
+</html>

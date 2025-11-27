@@ -122,7 +122,8 @@ const contactRoute = require('./routes/contact');
 const productsRoute = require('./routes/products');
 const cartRoute = require('./routes/cart'); 
 const adminRoute = require('./routes/admin');
-const ordersRoute = require('./routes/orders'); 
+const ordersRoute = require('./routes/orders');
+const adminReportsRoute = require('./routes/adminReports'); 
 
 
 // Health check endpoint (for Render/monitoring)
@@ -155,6 +156,7 @@ app.use('/products', productsRoute);
 app.use('/cart', cartRoute);
 app.use('/admin', adminRoute);
 app.use('/orders', ordersRoute);
+app.use('/admin', adminReportsRoute);
 
 
 
