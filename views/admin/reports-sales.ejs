@@ -8,9 +8,154 @@
     <link rel="stylesheet" href="/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/css/adminstyle.css">
+    <title><%= title %></title>
+    <meta charset="UTF-8" />
+    <style>
+        /* Print-specific styles */
+        @media print {
+            /* Hide elements that shouldn't be printed */
+            .no-print {
+                display: none !important;
+            }
+            
+            /* Page setup */
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 10pt;
+                line-height: 1.3;
+            }
+            
+            /* Container adjustments */
+            .admin-reports-container {
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .report-section {
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 2px solid #000;
+                page-break-inside: avoid;
+            }
+            
+            /* Headings */
+            .hero {
+                background: none !important;
+                padding: 10px 0;
+                page-break-after: avoid;
+            }
+            
+            .hero h1 {
+                font-size: 18pt;
+                margin: 0 0 5px 0;
+                color: #000;
+            }
+            
+            .hero p {
+                font-size: 10pt;
+                margin: 0;
+                color: #000;
+            }
+            
+            h2 {
+                font-size: 14pt;
+                margin: 0 0 10px 0;
+                page-break-after: avoid;
+            }
+            
+            .summary-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                margin-top: 10px;
+                page-break-inside: avoid;
+            }
+            
+            .summary-card {
+                border: 2px solid #000;
+                padding: 10px;
+                text-align: center;
+                background: #f5f5f5 !important;
+            }
+            
+            .summary-card h3 {
+                font-size: 9pt;
+                margin-bottom: 5px;
+            }
+            
+            .summary-card .value {
+                font-size: 16pt;
+                margin-top: 5px;
+            }
+            
+            .data-table {
+                width: 100%;
+                border-collapse: collapse;
+                page-break-inside: avoid;
+                font-size: 9pt;
+            }
+            
+            .data-table th,
+            .data-table td {
+                border: 1px solid #000;
+                padding: 6px;
+                text-align: left;
+            }
+            
+            .data-table th {
+                background-color: #e0e0e0 !important;
+                font-weight: bold;
+            }
+            
+            /* Chart container */
+            .chart-container {
+                height: 250px !important;
+                width: 100%;
+                page-break-inside: avoid;
+                page-break-before: auto;
+            }
+            
+            #salesChart {
+                max-height: 250px !important;
+                width: 100% !important;
+            }
+            
+            /* Force chart to render properly */
+            canvas {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+            
+            /* Ensure sections don't break across pages */
+            .report-section {
+                page-break-inside: avoid;
+            }
+            
+            .no-data-message {
+                text-align: center;
+                padding: 15px;
+                font-size: 10pt;
+            }
+        }
+        
+        /* Screen styles */
+        @media screen {
+            #salesChart {
+                max-height: 350px;
+            }
+        }
+    </style>
 
 </head>
 <body>
+    <section class="no-print">
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-container">
@@ -28,7 +173,7 @@
             </ul>
         </div>
     </nav>
-
+    </section>
     <!-- Main Content -->
     <main>
         <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-purple), var(--minecraft-green));">
@@ -36,6 +181,36 @@
             <p>Analyze your sales performance with detailed reports and charts</p>
         </section>
 
+        <section class="no-print">
+        <div class="admin-reports-container">
+            <div class="report-section">
+
+                <h2>Navigate</h2>
+                <p>
+                    <a href="/admin/products" class="pixel-btn">Back to Products</a>
+                    <a href="/admin/orders" class="pixel-btn">View Orders</a>
+                </p>
+                <section class="no-print" style="margin-bottom: 15px;">
+                <h2>Report Actions</h2>
+                <!-- Daily sales XLSX export -->
+                <a href="/admin/reports/sales/export/daily?startDate=<%= filters.startDate%>&endDate=<%= filters.endDate %>&status=<%= filters.status %>" class="pixel-btn" style="background: white; color: var(--pixel-black); text-decoration: none;">
+                Download Daily Sales (XLSX)</a>
+
+                <!-- Detailed orders XLSX export (you will implement later) -->
+                <a href="/admin/reports/sales/export/orders?startDate=<%= filters.startDate%>&endDate=<%= filters.endDate %>&status=<%= filters.status %>"class="pixel-btn" style="background: white; color: var(--pixel-black); text-decoration: none;">Download Detailed Orders (XLSX)</a>
+                <p>
+                    
+                <!-- Print / Save as PDF -->
+                <button type="button" onclick="window.print();" class="pixel-btn" style="background: rgb(219, 219, 219); color: var(--pixel-black); text-decoration: none;">
+                Print / Save as PDF
+                </button>
+                </p>
+            </section>
+            </div>
+        </div>
+        </section>
+
+        <section class="no-print">
         <div class="admin-reports-container">
             <!-- Filters Section -->
             <div class="report-section">
@@ -91,7 +266,10 @@
                     </div>
                 </form>
             </div>
+        </div>
+        </section>
 
+        <div class="admin-reports-container">
             <!-- Summary Section -->
             <div class="report-section">
                 <h2>Summary</h2>
@@ -158,7 +336,7 @@
                         
                         const ctx = document.getElementById("salesChart").getContext("2d");
                         new Chart(ctx, {
-                            type: "bar", // you can change to "line" if you prefer
+                            type: "bar",
                             data: {
                                 labels: salesLabels,
                                 datasets: [
@@ -199,6 +377,8 @@
     </main>
 
     <!-- Footer -->
+     <section class="no-print">
     <%- include('/partials/footer.ejs') %>
+    </section>
 </body>
 </html>
