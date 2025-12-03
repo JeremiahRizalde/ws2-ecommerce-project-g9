@@ -77,7 +77,10 @@
                         
                         <div class="form-group">
                             <label for="password">Password:</label>
-                            <input type="password" id="password" name="password" required>
+                            <div style="position: relative;">
+                                <input type="password" id="password" name="password" required>
+                                <span class="password-toggle" onclick="togglePassword('password', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem;">👁️</span>
+                            </div>
                         </div>
                         
                         <!-- Turnstile widget -->
@@ -103,6 +106,20 @@
 
     <!-- Footer -->
              <%- include('/partials/footer.ejs') %>
+
+    <!-- Password Toggle Script -->
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                icon.textContent = '👁️';
+            }
+        }
+    </script>
 
 </body>
 </html>

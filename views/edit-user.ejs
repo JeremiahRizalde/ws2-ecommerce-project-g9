@@ -1,17 +1,100 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title><%= title %></title>
-    </head>
-        <body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Pixel Stop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+                <span>Pixel Stop</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/users/admin">User Management</a></li>
+                <li><a href="/admin/dashboard">Dashboard</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-success">
+                <%= message %>
+            </div>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+        <div class="container">
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main>
+        <section class="hero" style="background: linear-gradient(to bottom, var(--pastel-purple), var(--minecraft-green));">
             <h1>Edit User</h1>
-                <form action="/users/edit/<%= user._id %>" method="POST">
-                    <label for="name">Name:</label><br>
-                    <input type="text" name="name" value="<%= user.name %>" required><br><br>
-                    <label for="email">Email:</label><br>
-                    <input type="email" name="email" value="<%= user.email %>"
-                    required><br><br>
-                    <button type="submit">Update</button>
-                </form>
-    </body>
+            <p>Update user role and account status</p>
+        </section>
+
+        <section>
+            <div class="container" style="max-width: 600px; margin: 2rem auto;">
+                <div class="pixel-box">
+                    <h2 style="margin-bottom: 1.5rem;">User Information</h2>
+                    
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="font-size: 0.75rem; display: block; margin-bottom: 0.5rem;">Name:</label>
+                        <p><%= user.firstName %> <%= user.lastName %></p>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="font-size: 0.75rem; display: block; margin-bottom: 0.5rem;">Email:</label>
+                        <p><%= user.email %></p>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="font-size: 0.75rem; display: block; margin-bottom: 0.5rem;">User ID:</label>
+                        <p><%= user.userId %></p>
+                    </div>
+
+                    <form action="/users/edit/<%= user.userId %>" method="POST">
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="role" style="font-size: 0.75rem; display: block; margin-bottom: 0.5rem;">Role:</label>
+                            <select id="role" name="role" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--pixel-black); font-family: 'Press Start 2P', cursive; font-size: 0.65rem;">
+                                <option value="customer" <%= user.role === 'customer' ? 'selected' : '' %>>Customer</option>
+                                <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="accountStatus" style="font-size: 0.75rem; display: block; margin-bottom: 0.5rem;">Account Status:</label>
+                            <select id="accountStatus" name="accountStatus" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--pixel-black); font-family: 'Press Start 2P', cursive; font-size: 0.65rem;">
+                                <option value="active" <%= user.accountStatus === 'active' ? 'selected' : '' %>>Active</option>
+                                <option value="suspended" <%= user.accountStatus === 'suspended' ? 'selected' : '' %>>Inactive</option>
+                            </select>
+                        </div>
+                        
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="pixel-btn" style="flex: 1;">Update User</button>
+                            <a href="/users/admin" class="pixel-btn" style="flex: 1; text-align: center; text-decoration: none; background-color: #666;">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <%- include('/partials/footer.ejs') %>
+</body>
 </html>

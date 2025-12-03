@@ -11,7 +11,7 @@
     <nav class="navbar">
     <div class="container nav-container">
         <div class="logo">
-            <img src="/images/logo.svg" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
+            <img src="/images/logo.png" alt="Pixel Stop Logo" onerror="this.src='/images/placeholder.png'">
             <span>Pixel Stop</span>
         </div>
         <ul class="nav-links">
@@ -82,7 +82,10 @@
                         
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" id="password" name="password" required>
+                            <div style="position: relative;">
+                                <input type="password" id="password" name="password" required>
+                                <span class="password-toggle" onclick="togglePassword('password', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem;">👁️</span>
+                            </div>
                             <div class="password-strength">
                                 <ul class="password-requirements">
                                     <li id="req-length">At least 8 characters</li>
@@ -109,6 +112,20 @@
 
     <!-- Footer -->
     <%- include('/partials/footer.ejs') %>
+
+    <!-- Password Toggle Script -->
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                icon.textContent = '👁️';
+            }
+        }
+    </script>
 
     <!-- Password Validation Script FRONTEND -->
     <script>

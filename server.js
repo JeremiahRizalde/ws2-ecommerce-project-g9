@@ -88,29 +88,50 @@ app.use((req, res, next) => {
 
 // Route protection middleware
 const requireLogin = (req, res, next) => {
-  // Exclude these paths from requiring login
+  // Public paths that don't require login
   const publicPaths = [
+    '/',                  // Home page
+    '/about',            // About page
+    '/products',         // Products listing
+    '/contact',          // Contact page
+    '/cart',             // Shopping cart (guest can view)
     '/users/login', 
     '/users/register', 
     '/password/forgot',  
     '/password/reset',
-    '/sitemap.xml',      // Allow public access to sitemap
-    '/health'            // Allow public access to health check
+    '/sitemap.xml',
+    '/health'
   ];
   
-  // Also allow any path that starts with /password/reset/ (for token-based reset)
-  if (req.path.startsWith('/password/reset/')) {
+  // Public path prefixes (allow any path starting with these)
+  const publicPathPrefixes = [
+    '/password/reset/',   // Password reset with token
+    '/users/verify/',     // Email verification with token
+    '/products/',         // Individual product pages and filtered views
+    '/contact/'          // Contact form submission
+  ];
+  
+  // Check if path is in public paths
+  if (publicPaths.includes(req.path)) {
     return next();
   }
   
-  if (!req.session.user && !publicPaths.includes(req.path)) {
+  // Check if path starts with any public prefix
+  if (publicPathPrefixes.some(prefix => req.path.startsWith(prefix))) {
+    return next();
+  }
+  
+  // Require login for all other paths
+  if (!req.session.user) {
     // Store the requested URL to redirect back after login
     req.session.returnTo = req.originalUrl;
+    req.flash('error', 'Please log in to access this page.');
     return res.redirect('/users/login');
   }
   
   next();
 };
+
 // Apply route protection to all routes except public ones
 app.use(requireLogin);
 

@@ -64,7 +64,7 @@ router.post('/forgot', async (req, res) => {
             <a href="${resetUrl}">${resetUrl}</a>
             `
         });
-        res.send("If an account with that email exists, a reset link has been sent.");
+        res.render('password-reset-link-sent');
         } catch (err) {
     console.error("Error in password reset:", err);
     res.send("Something went wrong.");
@@ -100,28 +100,70 @@ router.get('/reset/:token', (req, res) => {
                 resetExpiry: { $gt: new Date() }
             });
             if (!user) {
-                return res.send("Reset link is invalid or has expired.");
-                }
+                return res.render('password-reset-error', {
+                    errorType: 'INVALID OR EXPIRED LINK',
+                    message: 'This password reset link is invalid or has expired. Please request a new password reset link.'
+                });
+            }
 
             // Check if passwords match
             if (req.body.password !== req.body.confirm) {
-                return res.send("Passwords do not match.");
+                return res.render('password-reset-error', {
+                    errorType: 'PASSWORDS DO NOT MATCH',
+                    message: 'The passwords you entered do not match. Please go back and try again.'
+                });
+            }
+
+            // Validate password requirements
+            const password = req.body.password;
+            if (password.length < 8) {
+                return res.render('password-reset-error', {
+                    errorType: 'WEAK PASSWORD',
+                    message: 'Password must be at least 8 characters long.'
+                });
+            }
+            if (!/[A-Z]/.test(password)) {
+                return res.render('password-reset-error', {
+                    errorType: 'WEAK PASSWORD',
+                    message: 'Password must contain at least one uppercase letter.'
+                });
+            }
+            if (!/[a-z]/.test(password)) {
+                return res.render('password-reset-error', {
+                    errorType: 'WEAK PASSWORD',
+                    message: 'Password must contain at least one lowercase letter.'
+                });
+            }
+            if (!/[0-9]/.test(password)) {
+                return res.render('password-reset-error', {
+                    errorType: 'WEAK PASSWORD',
+                    message: 'Password must contain at least one number.'
+                });
+            }
+            if (!/[^A-Za-z0-9]/.test(password)) {
+                return res.render('password-reset-error', {
+                    errorType: 'WEAK PASSWORD',
+                    message: 'Password must contain at least one special character.'
+                });
             }
 
             // Hash the new password
             const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
             // Update password in DB, clear token and expiry
             await usersCollection.updateOne(
-            { email: user.email },
-            {
-            $set: { passwordHash: hashedPassword, updatedAt: new Date() },
-            $unset: { resetToken: "", resetExpiry: "" }
-            }
+                { email: user.email },
+                {
+                    $set: { passwordHash: hashedPassword, updatedAt: new Date() },
+                    $unset: { resetToken: "", resetExpiry: "" }
+                }
             );
-            res.send("Password has been reset. You can now log in with your new password.");
+            res.render('password-reset-success');
         } catch (err) {
-        console.error("Error resetting password:", err);
-        res.send("Something went wrong.");
+            console.error("Error resetting password:", err);
+            res.render('password-reset-error', {
+                errorType: 'RESET ERROR',
+                message: 'Something went wrong while resetting your password. Please try again later.'
+            });
         }
     });
 module.exports = router;

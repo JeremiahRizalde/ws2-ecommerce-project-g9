@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
             passwordHash: hashedPassword, // never store plain text password
             role: 'customer', // default role
             accountStatus: 'active',
-            isEmailVerified: true, // must be verified before login
+            isEmailVerified: false, // must be verified before login
             verificationToken: token, // link user to verification
             tokenExpiry: new Date(Date.now() + 3600000), // expires in 1 hour
             createdAt: currentDate,
@@ -75,11 +75,17 @@ router.post('/register', async (req, res) => {
             `
         });
 
+        // Redirect to login with success message
+        req.flash('message', 'Registration successful! Please check your email to verify your account.');
+        res.redirect('/users/login');
 
-        } catch (err) {
-            console.error("Error saving user:", err);
-            res.send("Something went wrong.");
-        }
+    } catch (err) {
+        console.error("Error saving user:", err);
+        res.status(500).render('register', { 
+            error: 'Registration failed. Please try again.',
+            user: null 
+        });
+    }
 });
 
 
@@ -283,9 +289,11 @@ router.get('/admin', async (req, res) => {
     res.render('admin', {
         title: "Admin Dashboard",
         users,
-        currentUser: req.session.user
-        });
+        currentUser: req.session.user,
+        message: req.flash('message'),
+        error: req.flash('error')
     });
+});
 
 // Logout route
 router.get('/logout', (req, res) => {
@@ -314,18 +322,24 @@ router.post('/login', async (req, res) => {
 
         // Find user by email
         const user = await usersCollection.findOne({ email: req.body.email });
-        if (!user) return res.send("User not found.");
+        if (!user) {
+            req.flash('error', 'User not found.');
+            return res.redirect('/users/login');
+        }
 
         // Check if account is active
-        if (user.accountStatus !== 'active') return res.send("Account is not active.");
+        if (user.accountStatus !== 'active') {
+            req.flash('error', 'Account is not active. Please contact support.');
+            return res.redirect('/users/login');
+        }
         
         // Verify email by logging in
         if (!user.isEmailVerified) {
-            return res.send("Please verify your email before logging in.");
+            return res.render('email-verification-required');
         }
 
         // Compare hashed password
-        const isPasswordValid = await bcrypt.compare(req.body.password,user.passwordHash);
+        const isPasswordValid = await bcrypt.compare(req.body.password, user.passwordHash);
         if (isPasswordValid) {
 
             // Store session
@@ -345,12 +359,14 @@ router.post('/login', async (req, res) => {
                 res.redirect('/users/dashboard');
             }
         } else {
-            res.send("Invalid password.");
+            req.flash('error', 'Invalid password.');
+            res.redirect('/users/login');
         }
         
     } catch (err) {
         console.error("Error during login:", err);
-        res.send("Something went wrong.");
+        req.flash('error', 'Something went wrong during login.');
+        res.redirect('/users/login');
     }
 });
 
@@ -366,30 +382,35 @@ router.get('/verify/:token', async (req, res) => {
 
         // 2. Check if token exists
         if (!user) {
-            return res.send("Invalid or expired verification link.");
+            return res.render('verify-error', {
+                errorType: 'INVALID TOKEN',
+                message: 'This verification link is invalid. The token may have already been used or does not exist.'
+            });
         }
 
-    // 3. Check if token is still valid
+        // 3. Check if token is still valid
         if (user.tokenExpiry < new Date()) {
-            return res.send("Verification link has expired. Please register again.");
+            return res.render('verify-error', {
+                errorType: 'LINK EXPIRED',
+                message: 'This verification link has expired. Please register again to receive a new verification email.'
+            });
         }
 
-    // 4. Update user as verified
+        // 4. Update user as verified
         await usersCollection.updateOne(
             { verificationToken: req.params.token },
-            { $set: { isEmailVerified: true }, $unset: { verificationToken: "", tokenExpiry:"" } }
+            { $set: { isEmailVerified: true }, $unset: { verificationToken: "", tokenExpiry: "" } }
         );
 
-    res.send(`
-        <h2>Email Verified!</h2>
-        <p>Your account has been verified successfully.</p>
-        <a href="/users/login">Proceed to Login</a>
-    `);
-        } catch (err) {
+        res.render('verify-success');
+    } catch (err) {
         console.error("Error verifying user:", err);
-        res.send("Something went wrong during verification.");
-        }
-    });
+        res.render('verify-error', {
+            errorType: 'VERIFICATION ERROR',
+            message: 'Something went wrong during verification. Please try again later or contact support.'
+        });
+    }
+});
 
 
 // Show all registered users
@@ -411,36 +432,51 @@ const { ObjectId } = require('mongodb');
 // Show edit form
 router.get('/edit/:id', async (req, res) => {
     try {
-        await client.connect();
-        const db = client.db(dbName);
+        const db = req.app.locals.client.db(req.app.locals.dbName);
         const usersCollection = db.collection('users');
 
-        const user = await usersCollection.findOne({ _id: new
-        ObjectId(req.params.id) });
-            if (!user) {
-                return res.send("User not found.");
-            }
-        res.render('edit-user', { title: "Edit User", user: user });
+        const user = await usersCollection.findOne({ userId: req.params.id });
+        if (!user) {
+            req.flash('error', 'User not found.');
+            return res.redirect('/users/admin');
+        }
+        res.render('edit-user', { 
+            title: "Edit User", 
+            user: user,
+            currentUser: req.session.user,
+            error: '',
+            message: ''
+        });
     } catch (err) {
-    console.error("Error loading user:", err);
-    res.send("Something went wrong.");
-}
+        console.error("Error loading user:", err);
+        req.flash('error', 'Something went wrong.');
+        res.redirect('/users/admin');
+    }
 });
 
 // Handle update form
 router.post('/edit/:id', async (req, res) => {
     try {
-        await client.connect();
-        const db = client.db(dbName);
+        const db = req.app.locals.client.db(req.app.locals.dbName);
         const usersCollection = db.collection('users');
+        
+        const updateData = {
+            role: req.body.role,
+            accountStatus: req.body.accountStatus,
+            updatedAt: new Date()
+        };
+        
         await usersCollection.updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $set: { name: req.body.name, email: req.body.email } }
+            { userId: req.params.id },
+            { $set: updateData }
         );
-        res.redirect('/users/list');
+        
+        req.flash('message', 'User updated successfully.');
+        res.redirect('/users/admin');
     } catch (err) {
         console.error("Error updating user:", err);
-        res.send("Something went wrong.");
+        req.flash('error', 'Something went wrong.');
+        res.redirect('/users/admin');
     }
 });
 
@@ -448,15 +484,16 @@ router.post('/edit/:id', async (req, res) => {
 // Delete user
 router.post('/delete/:id', async (req, res) => {
     try {
-        await client.connect();
-        const db = client.db(dbName);
+        const db = req.app.locals.client.db(req.app.locals.dbName);
         const usersCollection = db.collection('users');
         
-        await usersCollection.deleteOne({ _id: new ObjectId(req.params.id) });
-        res.redirect('/users/list');
+        await usersCollection.deleteOne({ userId: req.params.id });
+        req.flash('message', 'User deleted successfully.');
+        res.redirect('/users/admin');
     } catch (err) {
         console.error("Error deleting user:", err);
-        res.send("Something went wrong.");
+        req.flash('error', 'Something went wrong.');
+        res.redirect('/users/admin');
     }
 });
 
